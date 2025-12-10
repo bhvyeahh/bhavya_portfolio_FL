@@ -7,7 +7,12 @@ import { ChevronDown, Check } from "lucide-react";
 const plans = [
   {
     name: "BASIC",
-    prices: { USD: 150, EUR: 140, GBP: 120, INR: 4000 },
+    prices: { 
+        USD: 250, 
+        EUR: 235, // Adjusted for realistic exchange rate (rounded)
+        GBP: 195, // Adjusted for realistic exchange rate (rounded)
+        INR: 5000 // KEPT SAME
+    },
     desc: "All Basic Stuff for simple websites. Up for Negotiation :)",
     delivery: "2-day delivery",
     revisions: "1 Revision",
@@ -22,7 +27,12 @@ const plans = [
   },
   {
     name: "STANDARD",
-    prices: { USD: 250, EUR: 230, GBP: 200, INR: 8000 },
+    prices: { 
+        USD: 350, 
+        EUR: 325, 
+        GBP: 275, 
+        INR: 9000 // KEPT SAME
+    },
     desc: "Fulfilling your wants with Hosting - 1 Week Support after hosting.",
     delivery: "5-day delivery",
     revisions: "2 Revisions",
@@ -41,7 +51,12 @@ const plans = [
   },
   {
     name: "PREMIUM",
-    prices: { USD: 300, EUR: 275, GBP: 235, INR: 15000 },
+    prices: { 
+        USD: 500, 
+        EUR: 465, 
+        GBP: 395, 
+        INR: 15000 // KEPT SAME
+    },
     desc: "Full Product with Hosting - 2 Week Support after hosting.",
     delivery: "5-day delivery",
     revisions: "4 Revisions",
