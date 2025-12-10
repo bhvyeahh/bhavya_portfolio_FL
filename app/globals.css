@@ -1,0 +1,50 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+:root {
+  background-color: #050505;
+  color: #ededed;
+}
+
+body {
+  /* The subtle architectural grid */
+  background-size: 50px 50px;
+  background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
+                    linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+  overflow-x: hidden;
+}
+
+/* Hide scrollbar for cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+.mask-gradient-b {
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+/* 3D Utilities for ServiceList.tsx */
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Custom rotate utility if Tailwind's rotate-x-90 doesn't pick up immediately */
+.-rotate-x-90 {
+  transform: rotateX(-90deg);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
