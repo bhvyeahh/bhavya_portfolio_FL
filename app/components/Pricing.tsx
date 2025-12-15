@@ -8,13 +8,13 @@ const plans = [
   {
     name: "BASIC",
     prices: { 
-        USD: 250, 
-        EUR: 235, 
-        GBP: 195, 
-        INR: 5000 
+        USD: 500, 
+        EUR: 450, 
+        GBP: 400, 
+        INR: 15000 
     },
     desc: "A static portfolio or landing page to get your presence online.",
-    delivery: "3-day delivery",
+    delivery: "5-7 days delivery",
     revisions: "1 Revision",
     features: [
       { text: "Functional Static Website", included: true },
@@ -30,13 +30,13 @@ const plans = [
   {
     name: "STANDARD",
     prices: { 
-        USD: 350, 
-        EUR: 325, 
-        GBP: 275, 
-        INR: 9000 
+        USD: 1250, 
+        EUR: 1100, 
+        GBP: 950, 
+        INR: 35000 
     },
     desc: "Dynamic site with animations and admin panel for growing businesses.",
-    delivery: "5-day delivery",
+    delivery: "10-14 days delivery",
     revisions: "3 Revisions",
     features: [
       { text: "Functional Dynamic Website", included: true },
@@ -52,13 +52,13 @@ const plans = [
   {
     name: "PREMIUM",
     prices: { 
-        USD: 500, 
-        EUR: 465, 
-        GBP: 395, 
-        INR: 15000 
+        USD: 2200, 
+        EUR: 2250, 
+        GBP: 1900, 
+        INR: 60000 
     },
     desc: "Full-scale solution with online store, payments, and 24/7 support.",
-    delivery: "10-day delivery",
+    delivery: "3-4 Weeks delivery",
     revisions: "Unlimited",
     features: [
       { text: "Full Custom Platform", included: true },
