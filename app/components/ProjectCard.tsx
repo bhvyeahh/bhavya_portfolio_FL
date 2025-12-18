@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 // Updated project data with your specific links
 const projects = [
@@ -46,6 +47,12 @@ export default function FeaturedWorks() {
       <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-24 relative z-20">
         <span>//</span>
         <h2 className="text-white font-bold tracking-widest text-lg md:text-xl">FEATURED WORKS</h2>
+        <Link href="/work" passHref>
+        <button className="flex items-center gap-2 border border-white/10 rounded-full px-6 py-2 hover:bg-white hover:text-black transition-colors duration-300">
+          See All Works
+          <ArrowUpRight size={12} className="inline-block ml-2" />
+        </button>
+        </Link>
         <span>//</span>
       </div>
 

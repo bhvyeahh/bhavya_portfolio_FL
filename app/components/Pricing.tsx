@@ -33,7 +33,7 @@ const plans = [
         USD: 1250, 
         EUR: 1100, 
         GBP: 950, 
-        INR: 35000 
+        INR: 30000 
     },
     desc: "Dynamic site with animations and admin panel for growing businesses.",
     delivery: "10-14 days delivery",
@@ -55,7 +55,7 @@ const plans = [
         USD: 2200, 
         EUR: 2250, 
         GBP: 1900, 
-        INR: 60000 
+        INR: 55000 
     },
     desc: "Full-scale solution with online store, payments, and 24/7 support.",
     delivery: "3-4 Weeks delivery",
