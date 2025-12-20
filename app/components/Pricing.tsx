@@ -8,10 +8,10 @@ const plans = [
   {
     name: "BASIC",
     prices: { 
-        USD: 500, 
-        EUR: 450, 
-        GBP: 400, 
-        INR: 15000 
+        USD: 1000, 
+        EUR: 850, 
+        GBP: 700, 
+        INR: 25000 
     },
     desc: "A static portfolio or landing page to get your presence online.",
     delivery: "5-7 days delivery",
@@ -30,10 +30,10 @@ const plans = [
   {
     name: "STANDARD",
     prices: { 
-        USD: 1250, 
-        EUR: 1100, 
-        GBP: 950, 
-        INR: 30000 
+        USD: 1850, 
+        EUR: 1550, 
+        GBP: 1400, 
+        INR: 40000 
     },
     desc: "Dynamic site with animations and admin panel for growing businesses.",
     delivery: "10-14 days delivery",
@@ -52,10 +52,10 @@ const plans = [
   {
     name: "PREMIUM",
     prices: { 
-        USD: 2200, 
-        EUR: 2250, 
-        GBP: 1900, 
-        INR: 55000 
+        USD: 3000, 
+        EUR: 2550, 
+        GBP: 2250, 
+        INR: 65000 
     },
     desc: "Full-scale solution with online store, payments, and 24/7 support.",
     delivery: "3-4 Weeks delivery",
