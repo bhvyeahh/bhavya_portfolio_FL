@@ -167,7 +167,7 @@ export default function Hero() {
             strokeWidth={1}
           />
           <h2 className="font-display text-lg md:text-xl font-bold uppercase leading-tight text-white hero-sub-item">
-            UI Visual Designer and <br /> Framer Developer
+            Web Developer<br /> Helping Brands Build Their Digital Presence
           </h2>
           <p className="text-xs text-gray-400 max-w-[280px] md:max-w-xs leading-relaxed hero-sub-item">
             I love creating captivating and functional interfaces that evoke
@@ -195,7 +195,7 @@ export default function Hero() {
               />
               <text className="text-[12px] font-bold fill-white uppercase tracking-widest">
                 <textPath href="#curve">
-                  Verified Framer Expert • Verified Framer Expert •
+                  Freelancer • Freelancer •
                 </textPath>
               </text>
             </svg>
