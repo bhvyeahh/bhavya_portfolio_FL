@@ -195,7 +195,7 @@ export default function Hero() {
               />
               <text className="text-[12px] font-bold fill-white uppercase tracking-widest">
                 <textPath href="#curve">
-                  Freelancer • Freelancer •
+                  Web Freelancer • Freelancer •
                 </textPath>
               </text>
             </svg>
