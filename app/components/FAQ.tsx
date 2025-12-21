@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+
+import { useState, useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { Plus, Minus } from "lucide-react";
 
 const faqs = [
@@ -43,9 +45,67 @@ const faqs = [
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const containerRef = useRef<HTMLElement>(null);
+  
+  // Create refs array for the content divs so we can animate height
+  const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  const { contextSafe } = useGSAP({ scope: containerRef });
+
+  const handleToggle = contextSafe((index: number) => {
+    if (openIndex === index) {
+      // CLOSING: Animate height to 0
+      gsap.to(answerRefs.current[index], {
+        height: 0,
+        opacity: 0,
+        duration: 0.4,
+        ease: "power2.inOut",
+        onComplete: () => setOpenIndex(null), // Only update state after animation
+      });
+    } else {
+      // SWITCHING or OPENING
+      // If there's an open one, close it first
+      if (openIndex !== null) {
+        gsap.to(answerRefs.current[openIndex], {
+          height: 0,
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+        });
+      }
+      
+      setOpenIndex(index);
+      // Wait a tick for React to render the new state (if conditionally rendered) 
+      // OR since we are just animating height, we trigger it immediately.
+      
+      // We animate FROM 0 to auto manually since we aren't unmounting with GSAP here for simplicity,
+      // but to keep it "Awwwards" style, we animate the height property.
+      
+      gsap.fromTo(
+        answerRefs.current[index],
+        { height: 0, opacity: 0 },
+        { height: "auto", opacity: 1, duration: 0.6, ease: "elastic.out(1, 0.75)" }
+      );
+    }
+  });
+
+  // Staggered Entrance on Load
+  useGSAP(() => {
+    gsap.from(".faq-item", {
+      y: 20,
+      opacity: 0,
+      duration: 0.8,
+      stagger: 0.1,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top 80%",
+      }
+    });
+  }, { scope: containerRef });
 
   return (
-    <section className="relative w-full bg-[#050505] py-32 px-4 md:px-12 border-t border-white/5 overflow-hidden">
+    <section ref={containerRef} className="relative w-full bg-[#050505] py-32 px-4 md:px-12 border-t border-white/5 overflow-hidden">
       {/* --- Header --- */}
       <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-24 z-20 relative">
         <span>//</span>
@@ -54,24 +114,27 @@ export default function FAQ() {
       </div>
 
       <div className="max-w-4xl mx-auto relative z-20">
-        {/* 'LayoutGroup' ensures all items slide smoothly when one opens */}
         {faqs.map((faq, index) => (
-          <motion.div
-            layout
+          <div
             key={index}
-            className="border-b border-white/10 last:border-0 overflow-hidden"
+            className="faq-item group border-b border-white/10 last:border-0 relative"
           >
-            <motion.button
-              layout="position"
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
-              className="w-full py-8 flex justify-between items-center text-left group transition-colors hover:bg-white/5 px-4 rounded-lg"
+            {/* --- Animated Neon Glow Line (Active State) --- */}
+            {/* This creates a line that shoots across when active */}
+            <div 
+                className={`absolute bottom-0 left-0 h-[1px] bg-brand-green shadow-[0_0_10px_#00ff41] transition-all duration-700 ease-out z-30 ${openIndex === index ? "w-full opacity-100" : "w-0 opacity-0"}`}
+            ></div>
+
+            <button
+              onClick={() => handleToggle(index)}
+              className="w-full py-8 flex justify-between items-center text-left transition-all duration-300 hover:pl-4"
             >
               <div className="flex items-baseline gap-8">
-                <span className="font-mono text-xs text-gray-600 group-hover:text-brand-green transition-colors">
+                <span className={`font-mono text-xs transition-colors duration-300 ${openIndex === index ? "text-brand-green" : "text-gray-600 group-hover:text-white"}`}>
                   0{index + 1}
                 </span>
                 <h3
-                  className={`font-display font-bold text-lg md:text-2xl uppercase tracking-tight transition-colors duration-500 ${
+                  className={`font-display font-bold text-lg md:text-2xl uppercase tracking-tight transition-colors duration-300 ${
                     openIndex === index
                       ? "text-white"
                       : "text-gray-400 group-hover:text-white"
@@ -82,58 +145,32 @@ export default function FAQ() {
               </div>
 
               <div className="relative w-6 h-6 flex items-center justify-center">
-                <motion.div
-                  initial={false}
-                  animate={{
-                    rotate: openIndex === index ? 180 : 0,
-                    opacity: openIndex === index ? 0 : 1,
-                  }}
-                  transition={{ duration: 0.4 }}
-                  className="absolute"
-                >
-                  <Plus
-                    className="text-gray-500 group-hover:text-white"
-                    size={20}
-                  />
-                </motion.div>
-                <motion.div
-                  initial={false}
-                  animate={{
-                    rotate: openIndex === index ? 0 : -90,
-                    opacity: openIndex === index ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.4 }}
-                  className="absolute"
-                >
-                  <Minus className="text-white" size={20} />
-                </motion.div>
+                 {/* Icon Rotation handled via CSS classes for performance or simple GSAP logic */}
+                 <div className={`absolute transition-all duration-500 ${openIndex === index ? "rotate-180 opacity-0" : "rotate-0 opacity-100"}`}>
+                    <Plus className="text-gray-500 group-hover:text-white transition-colors" size={20} />
+                 </div>
+                 <div className={`absolute transition-all duration-500 ${openIndex === index ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"}`}>
+                    <Minus className="text-brand-green" size={20} />
+                 </div>
               </div>
-            </motion.button>
+            </button>
 
-            <AnimatePresence mode="sync">
-              {openIndex === index && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  // This ease curve is what makes it "buttery"
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <motion.div
-                    initial={{ y: 10, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 10, opacity: 0 }}
-                    transition={{ duration: 0.4, delay: 0.1 }} // Slight delay for the text
-                    className="pb-8 pl-12 md:pl-16 pr-4"
-                  >
-                    <p className="text-gray-400 text-sm leading-relaxed max-w-2xl font-mono">
-                      {faq.answer}
-                    </p>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+            {/* Answer Wrapper with ref for GSAP height animation */}
+            <div
+              ref={(el) => {
+                // Assign to refs array without returning anything
+                answerRefs.current[index] = el;
+              }}
+              className="overflow-hidden h-0 opacity-0" // Start hidden
+              style={openIndex === 0 && index === 0 ? { height: 'auto', opacity: 1 } : {}} // Hack to show first one initially if desired
+            >
+              <div className="pb-8 pl-12 md:pl-16 pr-4">
+                <p className="text-gray-400 text-sm leading-relaxed max-w-2xl font-mono">
+                  {faq.answer}
+                </p>
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 

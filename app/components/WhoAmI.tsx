@@ -1,6 +1,13 @@
 "use client";
-import { motion, type Variants } from "framer-motion";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Globe } from "lucide-react";
+
+// Register ScrollTrigger (just in case it's not global yet)
+gsap.registerPlugin(ScrollTrigger);
 
 const skills = [
   "FULL STACK",
@@ -8,71 +15,134 @@ const skills = [
   "REACT",
   "NODE.JS",
   "TAILWIND CSS",
-  "DATABASE DESIGN"
+  "DATABASE DESIGN",
 ];
 
-// --- Fixed TypingText ---
+// --- GSAP TypingText Component ---
 const TypingText = ({
   text,
   className,
-  delay = 0
+  delay = 0,
 }: {
   text: string;
   className?: string;
   delay?: number;
 }) => {
-  
-  const letters = Array.from(text);
-
-  const container: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: delay,
-      }
-    }
-  };
-
-  const child: Variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        damping: 12,
-        stiffness: 100,
-      }
-    }
-  };
-
   return (
-    <motion.span
-      style={{ overflow: "hidden", display: "inline-block" }}
-      variants={container}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.5 }}
-      className={className}
-    >
-      {letters.map((letter, index) => (
-        <motion.span
+    <span className={`inline-block overflow-hidden ${className}`}>
+      {text.split("").map((letter, index) => (
+        <span
           key={index}
-          variants={child}
-          style={{ display: "inline-block" }}
+          className="typing-char inline-block translate-y-full opacity-0 will-change-transform"
+          data-delay={delay} // We pass delay to read it in the main timeline
         >
           {letter === " " ? "\u00A0" : letter}
-        </motion.span>
+        </span>
       ))}
-    </motion.span>
+    </span>
   );
 };
 
 export default function WhoAmI() {
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top 60%", // Starts when top of section hits 60% of viewport
+          toggleActions: "play none none reverse",
+        },
+      });
+
+      // 1. Image "Cyber Scan" Reveal (The Mind-Blowing part)
+      // We animate the bars *out* to reveal the image, or animate them *in* to construct it.
+      // Let's animate the bars scaling Y to create a "digital reconstruction" vibe.
+      tl.from(".slice-bar", {
+        scaleY: 0,
+        transformOrigin: "top",
+        duration: 0.8,
+        stagger: {
+          amount: 0.5,
+          from: "random", // Randomizes the order for a glitch effect
+        },
+        ease: "power2.inOut",
+      });
+
+      // 2. Text Reveal (Reading the delay prop we set earlier doesn't work easily with batch selection)
+      // So we just stagger them manually in groups for precise control.
+
+      // Group 1: "INDIA, BASE"
+      tl.to(
+        ".typing-char",
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.02,
+          ease: "back.out(1.7)", // Nice pop effect
+        },
+        "-=0.4"
+      );
+
+      // 3. Skills Pills Cascade
+      tl.from(
+        ".skill-pill",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.5,
+          stagger: 0.05,
+          ease: "power2.out",
+        },
+        "-=0.5"
+      );
+
+      // 4. Globe Spin In
+      tl.from(
+        ".globe-icon",
+        {
+          scale: 0,
+          rotation: -180,
+          opacity: 0,
+          duration: 1,
+          ease: "elastic.out(1, 0.75)",
+        },
+        "-=0.8"
+      );
+
+      // 5. Parallax Effect on Mouse Move
+      const handleMouseMove = (e: MouseEvent) => {
+        const { clientX, clientY } = e;
+        const xPos = (clientX / window.innerWidth - 0.5) * 15;
+        const yPos = (clientY / window.innerHeight - 0.5) * 15;
+
+        // Move Image Text slightly opposite to mouse
+        gsap.to(".parallax-target", {
+          x: xPos,
+          y: yPos,
+          duration: 1,
+          ease: "power2.out",
+        });
+
+        // Move Image bars slightly for depth
+        gsap.to(".slice-bar", {
+          x: -xPos * 0.5,
+          duration: 1,
+          ease: "power2.out",
+        });
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      return () => window.removeEventListener("mousemove", handleMouseMove);
+    },
+    { scope: containerRef }
+  );
+
   return (
     <section
+      ref={containerRef}
       className="
         relative w-full 
         min-h-screen 
@@ -84,7 +154,6 @@ export default function WhoAmI() {
         border-t border-white/5
       "
     >
-      
       {/* --- TOP MARKERS --- */}
       <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-8 relative z-50">
         <span>//</span>
@@ -94,10 +163,8 @@ export default function WhoAmI() {
 
       {/* --- MAIN CONTENT WRAPPER --- */}
       <div className="relative flex-grow w-full h-full flex flex-col lg:block">
-        
         {/* LEFT TEXT BLOCK */}
-        <div className="relative z-30 pt-2 md:pt-10 pointer-events-none">
-
+        <div className="relative z-30 pt-2 md:pt-10 pointer-events-none parallax-target">
           {/* Location Typography */}
           <h2
             className="
@@ -122,16 +189,10 @@ export default function WhoAmI() {
             "
           >
             {skills.map((skill, index) => (
-              <motion.span
+              <span
                 key={skill}
-                initial={{ opacity: 0, scale: 0.8 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{
-                  duration: 0.4,
-                  delay: 0.8 + index * 0.05,
-                }}
                 className="
+                  skill-pill
                   px-3 py-1.5 md:px-5 md:py-2 
                   rounded-full border border-white/30 
                   text-[9px] md:text-[11px] 
@@ -142,23 +203,17 @@ export default function WhoAmI() {
                 "
               >
                 {skill}
-              </motion.span>
+              </span>
             ))}
           </div>
 
           {/* Globe Icon */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.2 }}
-            className="mt-6 md:mt-8 pointer-events-auto inline-block"
-          >
+          <div className="globe-icon mt-6 md:mt-8 pointer-events-auto inline-block">
             <Globe
               className="w-8 h-8 md:w-12 md:h-12 text-white animate-spin-slow"
               strokeWidth={0.8}
             />
-          </motion.div>
+          </div>
         </div>
 
         {/* PORTRAIT IMAGE RESPONSIVE FIX */}
@@ -181,18 +236,18 @@ export default function WhoAmI() {
               className="w-full h-full object-cover object-top opacity-90 grayscale contrast-125"
             />
 
-            {/* Slice bars */}
+            {/* Slice bars (The Glitch Overlay) */}
             <div className="absolute inset-0 w-full h-full flex justify-between">
-              { [...Array(12)].map((_, i) => (
+              {[...Array(12)].map((_, i) => (
                 <div
                   key={i}
-                  className="h-full bg-[#050505]"
+                  className="slice-bar h-full bg-[#050505]"
                   style={{
                     width: i % 2 === 0 ? "4%" : "2%",
                     opacity: i % 2 === 0 ? 0.7 : 0.3,
                   }}
                 />
-              )) }
+              ))}
             </div>
 
             {/* Gradients */}
@@ -200,7 +255,6 @@ export default function WhoAmI() {
             <div className="absolute top-0 right-0 w-1/4 h-full bg-gradient-to-l from-[#050505] to-transparent"></div>
           </div>
         </div>
-
       </div>
 
       {/* --- BOTTOM JOB TITLE / DESCRIPTION --- */}
@@ -213,8 +267,7 @@ export default function WhoAmI() {
           gap-6 pointer-events-none
         "
       >
-        
-        <div>
+        <div className="parallax-target">
           <h2
             className="
               font-display font-black 
@@ -238,18 +291,20 @@ export default function WhoAmI() {
             text-gray-400 leading-relaxed 
             font-mono uppercase tracking-wide 
             mix-blend-difference self-end
+            parallax-target
           "
         >
-          <TypingText
-            text="I specialize in solving business problems with code. From custom Next.js platforms to high-converting landing pages, I ensure your vision scales seamlessly online."
-            delay={0.8}
-          />
+          {/* Note: Standard text fade in for long paragraph is better than typing effect */}
+          <div className="typing-char opacity-0 translate-y-4">
+            I specialize in solving business problems with code. From custom
+            Next.js platforms to high-converting landing pages, I ensure your
+            vision scales seamlessly online.
+          </div>
         </div>
       </div>
 
       {/* GRID BG */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px] z-0 pointer-events-none"></div>
-
     </section>
   );
 }
