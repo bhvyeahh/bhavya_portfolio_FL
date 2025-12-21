@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ArrowUpRight, Globe } from "lucide-react";
@@ -12,11 +12,22 @@ export default function Hero() {
   const badgeRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
 
+  // FIX: Handle Time State to prevent Hydration Error
+  const [time, setTime] = useState("");
+
+  useEffect(() => {
+    setTime(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+    const interval = setInterval(() => {
+      setTime(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
   useGSAP(
     () => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      // 1. Initial Setups (Prevent FOUC)
+      // 1. Initial Setups
       gsap.set(".hero-nav-item", { y: -20, opacity: 0 });
       gsap.set(".hero-text-line", { y: 150, rotate: 5, opacity: 0 });
       gsap.set(".hero-sub-item", { y: 20, opacity: 0 });
@@ -39,7 +50,7 @@ export default function Hero() {
             opacity: 1,
             duration: 1.5,
             stagger: 0.15,
-            ease: "power4.out", // The "Premium" smooth ease
+            ease: "power4.out",
           },
           "-=0.8"
         )
@@ -56,7 +67,7 @@ export default function Hero() {
         .to(
           gridRef.current,
           {
-            rotateX: 0, // Lands flat
+            rotateX: 0,
             opacity: 1,
             y: 0,
             scale: 1,
@@ -76,7 +87,7 @@ export default function Hero() {
           "-=1.2"
         );
 
-      // 3. Interactive Mouse Parallax (The "Mindblowing" detail)
+      // 3. Interactive Mouse Parallax
       const handleMouseMove = (e: MouseEvent) => {
         if (!gridRef.current) return;
         const { clientX, clientY } = e;
@@ -117,12 +128,9 @@ export default function Hero() {
           </div>
         </div>
 
+        {/* TIME FIX APPLIED HERE */}
         <div className="hidden md:block text-xs font-mono text-gray-500 text-right hero-nav-item">
-          LOCAL TIME <br />{" "}
-          {new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          LOCAL TIME <br /> {time}
         </div>
 
         <Link href="mailto:bhavyarathore575@gmail.com" className="hero-nav-item">
@@ -144,7 +152,6 @@ export default function Hero() {
             ref={titleRef}
             className="font-display font-black text-[17vw] md:text-[14vw] lg:text-[12vw] leading-[0.8] tracking-tighter uppercase text-white text-center md:text-left"
           >
-            {/* Split text for stagger effect */}
             <div className="overflow-hidden">
               <div className="hero-text-line block">BHAVYA</div>
             </div>
@@ -171,7 +178,7 @@ export default function Hero() {
 
       {/* --- THE SKEWED WORK SHOWCASE --- */}
       <div className="relative w-full mt-20 md:mt-24 perspective-1000">
-        {/* The Badge Floating Over the Grid */}
+        {/* The Badge */}
         <div className="absolute left-1/2 -top-14 md:-top-24 -translate-x-1/2 z-30">
           <div
             ref={badgeRef}
@@ -197,21 +204,18 @@ export default function Hero() {
         </div>
 
         {/* The Slanted Image Grid */}
-        {/* Note: I added 'preserve-3d' class logic via styles for the 3D effect */}
         <div
           ref={gridRef}
           className="w-full h-[35vh] md:h-[60vh] overflow-hidden rounded-t-3xl border-t border-white/10 relative"
           style={{ transformStyle: "preserve-3d" }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-4 transform -skew-y-3 scale-110 opacity-60 hover:opacity-100 transition-opacity duration-500">
-            {/* Images */}
             <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
             <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
             <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
             <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
           </div>
 
-          {/* Overlay Gradient */}
           <div className="absolute bottom-0 w-full h-24 md:h-32 bg-gradient-to-t from-brand-dark to-transparent z-10"></div>
         </div>
 
@@ -223,7 +227,6 @@ export default function Hero() {
           </div>
           <div className="hidden md:block">Result On Time Delivery</div>
           <div className="hidden md:block">NDA Agreement Ready</div>
-          {/* Mobile Only variant for middle items if you want them shown */}
           <div className="md:hidden flex gap-4">
             <span>On Time Delivery</span>
             <span>•</span>
