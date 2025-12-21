@@ -308,6 +308,10 @@ export default function Pricing() {
 
       {/* Grid BG */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px] pointer-events-none z-0"></div>
+      <br />
+      <br />
+      <br />
     </section>
+    
   );
 }
