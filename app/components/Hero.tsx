@@ -120,7 +120,7 @@ export default function Hero() {
       <nav className="flex justify-between items-center md:items-start mb-12 md:mb-16 z-50">
         <div className="flex flex-col hero-nav-item">
           <span className="font-display font-bold text-xl md:text-2xl tracking-tighter text-white">
-            BHAVYA.
+            Layoutory.
           </span>
           <div className="text-[9px] md:text-[10px] text-gray-400 mt-1 flex items-center gap-2 uppercase tracking-wide">
             <span className="w-1.5 h-1.5 bg-brand-green rounded-full animate-pulse shadow-[0_0_8px_#00ff41]"></span>
@@ -153,10 +153,10 @@ export default function Hero() {
             className="font-display font-black text-[17vw] md:text-[14vw] lg:text-[12vw] leading-[0.8] tracking-tighter uppercase text-white text-center md:text-left"
           >
             <div className="overflow-hidden">
-              <div className="hero-text-line block">BHAVYA</div>
+              <div className="hero-text-line block">Bhavya</div>
             </div>
             <div className="overflow-hidden">
-              <span className="text-zinc-700 hero-text-line block">DEV.</span>
+              <span className="text-zinc-700 hero-text-line block">Dev.</span>
             </div>
           </h1>
         </div>
@@ -167,7 +167,7 @@ export default function Hero() {
             strokeWidth={1}
           />
           <h2 className="font-display text-lg md:text-xl font-bold uppercase leading-tight text-white hero-sub-item">
-            Web Developer<br /> Helping Brands Build Their Digital Presence
+            Web Developer at Layoutory,<br /> Helping Brands Build Their Digital Presence
           </h2>
           <p className="text-xs text-gray-400 max-w-[280px] md:max-w-xs leading-relaxed hero-sub-item">
             I love creating captivating and functional interfaces that evoke

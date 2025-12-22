@@ -7,7 +7,7 @@ const syne = Syne({ subsets: ["latin"], weight: ["400", "700", "800"], variable:
 const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: "Bhavya Rathore | Web Consultant",
+  title: "Bhavya Rathore | Layoutory",
   description: "Helping businesses grow with high-converting websites.",
 };
 
