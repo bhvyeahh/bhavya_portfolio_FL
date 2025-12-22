@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronDown, Check, X, Plus, Star, Zap, Calendar } from "lucide-react";
+import { ChevronDown, Check, X, Plus, Star, Zap, Calendar, ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,33 +13,31 @@ const currencies = {
   USD: { symbol: "$", label: "USD ($)", rate: 1 },
   EUR: { symbol: "€", label: "EUR (€)", rate: 0.85 },
   GBP: { symbol: "£", label: "GBP (£)", rate: 0.75 },
-  INR: { symbol: "₹", label: "India (₹)", rate: 85 },
+  INR: { symbol: "₹", label: "India (₹)", rate: 25 }, // Custom rate for Add-ons to match your PPP (20k/1k ratio)
 };
 
-// --- DATA: MAIN PLANS ---
+// --- DATA: MAIN PLANS (RESTORED ORIGINAL STRUCTURE) ---
 const plans = [
   {
     name: "BASIC",
-    basePrice: 1000,
+    // Restored specific pricing object
+    prices: { USD: 1000, EUR: 850, GBP: 750, INR: 20000 },
     desc: "A professional static presence to get your business online.",
     delivery: "5-7 days",
     revisions: "2 Rounds",
-        features: [
+    features: [
       { text: "Mobile Responsive Design", included: true },
       { text: "Social Media Integration", included: true },
       { text: "Google Maps & Business Setup", included: true },
       { text: "Functional Static Website", included: true },
-      { text: "CMS (Edit text & images yourself)", included: false },
-      { text: "Contact Forms & Lead Database", included: false },
-      { text: "Basic SEO Optimization", included: false },
+      { text: "CMS (Edit text yourself)", included: false },
+      { text: "Contact Forms & Database", included: false },
       { text: "Premium Animations", included: false },
-      { text: "E-commerce & Online Payments", included: false },
-      { text: "30 Days Priority Support", included: false },
     ],
   },
   {
     name: "STANDARD",
-    basePrice: 1850,
+    prices: { USD: 1850, EUR: 1575, GBP: 1385, INR: 40000 },
     desc: "Dynamic site with a CMS for businesses that update content often.",
     delivery: "10-14 days",
     revisions: "3 Rounds",
@@ -48,17 +46,14 @@ const plans = [
       { text: "Social Media Integration", included: true },
       { text: "Google Maps & Business Setup", included: true },
       { text: "Functional Dynamic Website", included: true },
-      { text: "CMS (Edit text & images yourself)", included: true },
-      { text: "Contact Forms & Lead Database", included: true },
-      { text: "Basic SEO Optimization", included: true },
+      { text: "CMS (Edit text yourself)", included: true },
+      { text: "Contact Forms & Database", included: true },
       { text: "Premium Animations", included: false },
-      { text: "E-commerce & Online Payments", included: false },
-      { text: "30 Days Priority Support", included: false },
     ],
   },
   {
     name: "PREMIUM",
-    basePrice: 3000,
+    prices: { USD: 3000, EUR: 2550, GBP: 2250, INR: 70000 },
     desc: "Full-scale E-commerce solution with payments and advanced logic.",
     delivery: "3-4 Weeks",
     revisions: "5 Rounds",
@@ -67,17 +62,14 @@ const plans = [
       { text: "Social Media Integration", included: true },
       { text: "Google Maps & Business Setup", included: true },
       { text: "Functional Dynamic Website", included: true },
-      { text: "CMS (Edit text & images yourself)", included: true },
-      { text: "Contact Forms & Lead Database", included: true },
-      { text: "Basic SEO Optimization", included: true },
+      { text: "CMS (Edit text yourself)", included: true },
+      { text: "Contact Forms & Database", included: true },
       { text: "Premium Animations", included: true },
-      { text: "E-commerce & Online Payments", included: true },
-      { text: "30 Days Priority Support", included: true },
     ],
   },
 ];
 
-// --- DATA: ADD-ONS (Extra Costs) ---
+// --- DATA: ADD-ONS (Base prices in USD) ---
 const addOns = [
   { name: "Extra Page", basePrice: 150, desc: "Per additional page beyond package limit." },
   { name: "Extra Revision Round", basePrice: 100, desc: "Per round of design changes." },
@@ -101,9 +93,11 @@ const monthlyServices = [
   },
 ];
 
-// --- DATA: PREMIUM FREEBIES (Incentives) ---
+// --- DATA: PREMIUM FREEBIES ---
 const premiumFreebies = [
-  "10% Discount on Future Add-Ons", 
+
+  "10% Discount on Future Add-Ons",
+
 ];
 
 // Type definition for snowflakes
@@ -122,19 +116,16 @@ export default function Pricing() {
   const containerRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const santaRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<HTMLDivElement>(null);
 
   const isGlobal = currency !== "INR";
   const DISCOUNT_PERCENTAGE = 0.25; // 25% Discount
 
-  // Helper to convert and round price
-  const getPrice = (base: number, applyDiscount: boolean = false) => {
-    let rate = currencies[currency].rate;
-    // Round UP to nearest 50 for clean numbers
-    let final = base * rate;
-    if (applyDiscount) {
-        final = final * (1 - DISCOUNT_PERCENTAGE);
-    }
-    return Math.ceil(final / 50) * 50;
+  // Helper for ADD-ONS only (Calculates rate based on selection)
+  const getAddonPrice = (base: number) => {
+    const rate = currencies[currency].rate;
+    // Round UP to nearest 10
+    return Math.ceil((base * rate) / 10) * 10;
   };
 
   // --- 0. HYDRATION FIX ---
@@ -175,7 +166,7 @@ export default function Pricing() {
     );
     gsap.to(santaRef.current, { y: "+=20", duration: 1.5, repeat: -1, yoyo: true, ease: "sine.inOut" });
 
-  }, { scope: containerRef }); // No dependencies, runs once on mount
+  }, { scope: containerRef });
 
   // --- 2. PRICE CHANGE ANIMATION (Runs on Currency Change) ---
   useGSAP(() => {
@@ -260,33 +251,80 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* CURRENCY TOGGLE */}
-      <div className="flex justify-end mb-12 relative z-30">
-        <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2">
-            <div className="relative">
-                <button onClick={() => setIsOpen(!isOpen)} className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase flex items-center gap-2 ${isGlobal ? "bg-white text-black" : "text-gray-400"}`}>
-                    {isGlobal ? currencies[currency].label : "Global"} <ChevronDown size={12} />
-                </button>
-                {/* FIXED: Dropdown visibility controlled by GSAP */}
-                <div ref={dropdownRef} className="absolute top-full right-0 mt-2 w-32 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0">
-                    {(["USD", "EUR", "GBP"] as const).map((curr) => (
-                        <button key={curr} onClick={() => { setCurrency(curr); setIsOpen(false); }} className="w-full text-left px-4 py-3 text-[10px] font-bold text-gray-400 hover:bg-white hover:text-black block">
-                            {curr}
-                        </button>
-                    ))}
+      {/* Header Controls */}
+      <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
+        
+        {/* Left: Title */}
+        <div className="flex items-center gap-3 md:gap-4">
+          <span className="text-red-500">//</span>
+          <span className="text-white font-bold tracking-widest">PRICING & PACKAGES</span>
+          <span className="text-red-500">//</span>
+        </div>
+
+        {/* Right: Controls (Currency + Redirect Button) */}
+        <div className="flex flex-col md:flex-row items-center gap-4 relative z-30 w-full md:w-auto">
+            
+            {/* View Full Page Button */}
+
+            {/* Currency Selector */}
+            <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2 w-full md:w-auto justify-between md:justify-start">
+            
+                <div className="relative w-full md:w-auto">
+                    <button
+                        onClick={() => setIsOpen(!isOpen)}
+                        className={`
+                            w-full md:w-auto px-5 py-2 rounded-full text-[10px] font-bold uppercase 
+                            flex items-center justify-between md:justify-center gap-2 transition-all duration-300
+                            ${isGlobal ? "bg-white text-black" : "text-gray-400 hover:text-white"}
+                        `}
+                    >
+                        {isGlobal ? currencies[currency].label : "Global"}
+                        <ChevronDown size={12} className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`} />
+                    </button>
+
+                    <div 
+                        ref={dropdownRef}
+                        className="absolute top-full right-0 mt-2 w-32 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0"
+                    >
+                        {(["USD", "EUR", "GBP"] as const).map((curr) => (
+                            <button
+                                key={curr}
+                                onClick={() => {
+                                    setCurrency(curr);
+                                    setIsOpen(false);
+                                }}
+                                className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-white hover:text-black block"
+                            >
+                                {curr}
+                            </button>
+                        ))}
+                    </div>
                 </div>
+
+                <button
+                    onClick={() => {
+                        setCurrency("INR");
+                        setIsOpen(false);
+                    }}
+                    className={`
+                    px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
+                    ${currency === "INR" ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]" : "text-gray-400 hover:text-white"}
+                    `}
+                >
+                    India (₹)
+                </button>
             </div>
-            <button onClick={() => { setCurrency("INR"); setIsOpen(false); }} className={`px-4 py-2 rounded-full text-[10px] font-bold uppercase ${currency === "INR" ? "bg-red-600 text-white" : "text-gray-400"}`}>
-                India (₹)
-            </button>
         </div>
       </div>
 
       {/* --- MAIN PRICING GRID --- */}
-      <div className="pricing-grid max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 relative group/grid mb-24">
+      <div ref={cardsRef} className="pricing-grid max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 relative group/grid mb-24">
         {plans.map((plan) => {
-          const originalPrice = getPrice(plan.basePrice, false);
-          const discountedPrice = getPrice(plan.basePrice, true);
+          // --- FIXED: USE HARDCODED PRICES ---
+          const originalPrice = plan.prices[currency as keyof typeof plan.prices];
+          
+          // Apply discount and round up to nearest 50
+          const discountedPrice = Math.ceil((originalPrice * (1 - DISCOUNT_PERCENTAGE)) / 50) * 50;
 
           return (
             <div key={plan.name} className="pricing-card flex flex-col h-full relative z-10 p-6 md:p-8 rounded-3xl border border-white/5 bg-[#0a0a0a] overflow-hidden transition-transform duration-500 hover:-translate-y-2">
@@ -364,7 +402,8 @@ export default function Pricing() {
                             </div>
                             <div className="text-right relative z-10">
                                 <span className="text-red-400 font-bold font-mono block price-value">
-                                    +{currencies[currency].symbol}{getPrice(addon.basePrice, false).toLocaleString()}
+                                    {/* FIXED: USE HELPER FOR ADD-ONS */}
+                                    +{currencies[currency].symbol}{getAddonPrice(addon.basePrice).toLocaleString()}
                                 </span>
                             </div>
                         </div>
@@ -394,7 +433,8 @@ export default function Pricing() {
                             </div>
                             <div className="border-t border-white/5 pt-4 relative z-10">
                                 <span className="text-white font-bold font-mono text-lg price-value">
-                                    {currencies[currency].symbol}{getPrice(service.basePrice, false).toLocaleString()}
+                                    {/* FIXED: USE HELPER FOR MONTHLY */}
+                                    {currencies[currency].symbol}{getAddonPrice(service.basePrice).toLocaleString()}
                                 </span>
                                 <span className="text-white/30 text-[10px] ml-1">/month</span>
                             </div>
