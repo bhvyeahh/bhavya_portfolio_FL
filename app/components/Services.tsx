@@ -57,6 +57,9 @@ export default function Services() {
 
       // Grid Pattern subtle fade in
       tl.from(".bg-grid-pattern", { opacity: 0, duration: 2 }, "-=1");
+      
+      // Background Image subtle scale in (Entrance)
+      tl.from(".bg-texture-img", { scale: 1.1, opacity: 0, duration: 2 }, "-=2");
     },
     { scope: containerRef }
   );
@@ -118,13 +121,25 @@ export default function Services() {
   });
 
   return (
-    // CHANGE 1: min-h-[50vh] instead of min-h-screen for mobile
     <section
       ref={containerRef}
-      className="relative w-full min-h-[60vh] md:min-h-screen bg-brand-dark flex flex-col items-center justify-center py-12 md:py-20 overflow-hidden perspective-1000"
+      className="relative w-full min-h-[60vh] md:min-h-screen bg-black flex flex-col items-center justify-center py-12 md:py-20 overflow-hidden perspective-1000"
     >
+      {/* --- NEW BACKGROUND LAYER --- */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {/* The Texture Image */}
+        <img 
+            src="https://framerusercontent.com/images/SiTp60CA763cUNymzR4blwSuBvo.webp?scale-down-to=2048" 
+            alt="Background Texture"
+            className="bg-texture-img w-full h-full object-cover opacity-50 mix-blend-screen" 
+        />
+        {/* Gradient Overlay (Top and Bottom Fade) to integrate image smoothly */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black opacity-80" />
+        <div className="absolute inset-0 bg-black/30" /> 
+      </div>
+
       {/* Top Header */}
-      <div className="absolute top-4 md:top-10 w-full px-4 md:px-8 flex justify-between items-center text-gray-600 font-mono text-[10px] md:text-xs uppercase tracking-widest border-b border-white/5 pb-2 md:pb-4">
+      <div className="absolute top-4 md:top-10 w-full px-4 md:px-8 flex justify-between items-center text-gray-500 font-mono text-[10px] md:text-xs uppercase tracking-widest border-b border-white/5 pb-2 md:pb-4 z-20">
         <span>//</span>
         <span className="text-white font-bold">Services</span>
         <span>//</span>
@@ -144,14 +159,14 @@ export default function Services() {
                 : handleMouseEnter(service.id)
             }
           >
-            {/* CHANGE 2: Reduced text sizes */}
+            {/* Reduced text sizes */}
             <h2
               className={`service-item-text text-${service.id} font-display font-black text-[12vw] md:text-[11vw] leading-[0.8] md:leading-[0.85] uppercase tracking-tighter text-zinc-800 transition-colors will-change-transform`}
             >
               {service.label}
             </h2>
 
-            {/* Desktop-only sub-labels (CSS hover is fine for simple opacity, or use GSAP logic) */}
+            {/* Desktop-only sub-labels */}
             {service.id === "uiux" && (
               <div className="hidden md:block absolute -left-32 top-1/2 -translate-y-1/2 text-xs font-mono text-gray-500 text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 Web & App Design <br /> UX Research
@@ -166,12 +181,11 @@ export default function Services() {
         ))}
       </div>
 
-      {/* Floating Images Layer (Now Pre-rendered for performance) */}
+      {/* Floating Images Layer */}
       <div className="absolute inset-0 w-full h-full pointer-events-none z-30">
         {services.map((service) => (
           <div
             key={service.id}
-            // Start invisible (opacity 0, visibility hidden) and scaled down
             className={`img-${service.id} absolute ${service.position} z-30 w-full md:w-auto flex justify-center md:block opacity-0 invisible scale-90`}
           >
             <div className="w-[80vw] max-w-[300px] aspect-video md:w-[320px] md:h-[220px] rounded-2xl overflow-hidden border-2 border-white/10 shadow-2xl bg-zinc-900">
@@ -186,8 +200,8 @@ export default function Services() {
         ))}
       </div>
 
-      {/* Background Grid Pattern */}
-      <div className="bg-grid-pattern absolute inset-0 opacity-30 z-0"></div>
+      {/* Background Grid Pattern (Optional: Kept it but lowered opacity to blend with image) */}
+      <div className="bg-grid-pattern absolute inset-0 opacity-10 z-10 pointer-events-none mix-blend-overlay"></div>
     </section>
   );
 }
