@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronDown, Check, X } from "lucide-react";
+import { ChevronDown, Check, X, ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -267,65 +267,82 @@ export default function Pricing() {
       </div>
 
 
-      {/* Header */}
+{/* Header */}
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
+        
+        {/* Left: Title */}
         <div className="flex items-center gap-3 md:gap-4">
           <span className="text-red-500">//</span>
           <span className="text-white font-bold tracking-widest">PRICING & PACKAGES</span>
           <span className="text-red-500">//</span>
         </div>
 
-        {/* Currency Selector */}
-        <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2 w-full md:w-auto justify-between md:justify-start relative z-30">
-          
-          {/* Global Dropdown */}
-          <div className="relative w-full md:w-auto">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className={`
-                w-full md:w-auto px-5 py-2 rounded-full text-[10px] font-bold uppercase 
-                flex items-center justify-between md:justify-center gap-2 transition-all duration-300
-                ${isGlobal ? "bg-white text-black" : "text-gray-400 hover:text-white"}
-              `}
+        {/* Right: Controls (Currency + Redirect Button) */}
+        <div className="flex flex-col md:flex-row items-center gap-4 relative z-30 w-full md:w-auto">
+            
+            {/* --- NEW: Redirect Button --- */}
+            <a 
+                href="/pricing" 
+                className="hidden md:flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors group"
             >
-              {isGlobal ? currencies[currency].label : "Global"}
-              <ChevronDown size={12} className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`} />
-            </button>
+                View Full Page
+                <span className="bg-white/10 p-1 rounded-full text-white/50 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+                    <ArrowRight size={10} />
+                </span>
+            </a>
 
-            {/* GSAP Controlled Dropdown Menu */}
-            <div 
-              ref={dropdownRef}
-              className="absolute top-full left-0 mt-2 w-full md:w-40 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0 origin-top"
-            >
-              {(["USD", "EUR", "GBP"] as const).map((curr) => (
+            {/* Currency Selector */}
+            <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2 w-full md:w-auto justify-between md:justify-start">
+            
+            {/* Global Dropdown */}
+            <div className="relative w-full md:w-auto">
                 <button
-                  key={curr}
-                  onClick={() => {
-                    setCurrency(curr);
-                    setIsOpen(false);
-                  }}
-                  className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-white hover:text-black flex justify-between transition-colors duration-200"
+                onClick={() => setIsOpen(!isOpen)}
+                className={`
+                    w-full md:w-auto px-5 py-2 rounded-full text-[10px] font-bold uppercase 
+                    flex items-center justify-between md:justify-center gap-2 transition-all duration-300
+                    ${isGlobal ? "bg-white text-black" : "text-gray-400 hover:text-white"}
+                `}
                 >
-                  {curr}
-                  {currency === curr && <Check size={10} />}
+                {isGlobal ? currencies[currency].label : "Global"}
+                <ChevronDown size={12} className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300`} />
                 </button>
-              ))}
-            </div>
-          </div>
 
-          {/* India Button */}
-          <button
-            onClick={() => {
-              setCurrency("INR");
-              setIsOpen(false);
-            }}
-            className={`
-              px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
-              ${currency === "INR" ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]" : "text-gray-400 hover:text-white"}
-            `}
-          >
-            India (₹)
-          </button>
+                {/* GSAP Controlled Dropdown Menu */}
+                <div 
+                ref={dropdownRef}
+                className="absolute top-full left-0 mt-2 w-full md:w-40 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0 origin-top"
+                >
+                {(["USD", "EUR", "GBP"] as const).map((curr) => (
+                    <button
+                    key={curr}
+                    onClick={() => {
+                        setCurrency(curr);
+                        setIsOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-white hover:text-black flex justify-between transition-colors duration-200"
+                    >
+                    {curr}
+                    {currency === curr && <Check size={10} />}
+                    </button>
+                ))}
+                </div>
+            </div>
+
+            {/* India Button */}
+            <button
+                onClick={() => {
+                setCurrency("INR");
+                setIsOpen(false);
+                }}
+                className={`
+                px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
+                ${currency === "INR" ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]" : "text-gray-400 hover:text-white"}
+                `}
+            >
+                India (₹)
+            </button>
+            </div>
         </div>
       </div>
 
