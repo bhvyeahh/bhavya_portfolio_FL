@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronDown, Check, X, ArrowRight } from "lucide-react";
+import { ChevronDown, Check, X, ArrowRight, Sparkles } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- DATA ---
+// --- DATA (Unchanged) ---
 const plans = [
   {
     name: "BASIC",
@@ -91,38 +91,37 @@ const currencies = {
   INR: { symbol: "₹", label: "India (₹)" },
 };
 
-// Type definition for snowflakes
-type Snowflake = {
+// Type definition for particles
+type Particle = {
   left: string;
-  fontSize: string;
+  size: string;
   animationDuration: string;
   animationDelay: string;
+  opacity: number;
 };
 
 export default function Pricing() {
-  const [currency, setCurrency] = useState<"USD" | "EUR" | "GBP" | "INR">(
-    "USD"
-  );
+  const [currency, setCurrency] = useState<"USD" | "EUR" | "GBP" | "INR">("USD");
   const [isOpen, setIsOpen] = useState(false);
-  const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const containerRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
-  const santaRef = useRef<HTMLDivElement>(null);
 
   const isGlobal = currency !== "INR";
-  const DISCOUNT_PERCENTAGE = 0.25; // 25% Discount
+  const DISCOUNT_PERCENTAGE = 0.10; // UPDATED: 10% Discount
 
-  // --- 0. HYDRATION FIX: Generate Snowflakes on Mount ---
+  // --- 0. HYDRATION FIX: Generate Particles (Gold Dust) on Mount ---
   useEffect(() => {
-    const generatedFlakes = [...Array(20)].map(() => ({
+    const generatedParticles = [...Array(30)].map(() => ({
       left: `${Math.random() * 100}%`,
-      fontSize: `${Math.random() * 20 + 10}px`,
-      animationDuration: `${Math.random() * 5 + 5}s`,
+      size: `${Math.random() * 4 + 2}px`, // Smaller, like dust/stars
+      animationDuration: `${Math.random() * 10 + 10}s`, // Slower floating
       animationDelay: `${Math.random() * 5}s`,
+      opacity: Math.random() * 0.5 + 0.2,
     }));
-    setSnowflakes(generatedFlakes);
+    setParticles(generatedParticles);
   }, []);
 
   // --- 1. Currency Switch Animation (Blur Swap) ---
@@ -169,36 +168,7 @@ export default function Pricing() {
     { dependencies: [isOpen] }
   );
 
-  // --- 3. SANTA FLYING ANIMATION 🎅 ---
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({ repeat: -1, repeatDelay: 5 });
-
-      tl.fromTo(
-        santaRef.current,
-        { x: "-20vw", y: "10vh", rotation: 5, opacity: 0 },
-        {
-          x: "120vw",
-          y: "-10vh",
-          rotation: -5,
-          opacity: 1,
-          duration: 15,
-          ease: "linear",
-        }
-      );
-
-      gsap.to(santaRef.current, {
-        y: "+=20",
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-    },
-    { scope: containerRef }
-  );
-
-  // --- 4. Spotlight & Entrance Animations ---
+  // --- 3. Spotlight & Entrance Animations ---
   useGSAP(
     () => {
       gsap.from(".pricing-card", {
@@ -241,72 +211,67 @@ export default function Pricing() {
       ref={containerRef}
       className="relative w-full bg-[#050505] py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5 overflow-hidden font-sans"
     >
-      {/* --- CHRISTMAS THEME ASSETS --- */}
+      {/* --- NEW YEAR THEME ASSETS --- */}
 
-      {/* 1. Falling Snow Overlay (CSS Animation) */}
+      {/* 1. Floating Gold Dust/Bubbles (CSS Animation) */}
       <style jsx>{`
-        @keyframes snow {
+        @keyframes floatUp {
           0% {
-            transform: translateY(-100vh);
+            transform: translateY(100vh) scale(0);
             opacity: 0;
           }
-          50% {
+          20% {
             opacity: 1;
+            transform: translateY(80vh) scale(1);
           }
           100% {
-            transform: translateY(100vh);
+            transform: translateY(-10vh) scale(0.5);
             opacity: 0;
           }
         }
-        .snowflake {
+        .particle {
           position: absolute;
-          top: -10px;
-          color: white;
-          opacity: 0.8;
-          animation: snow linear infinite;
+          bottom: -20px;
+          background: radial-gradient(circle, rgba(251,191,36,1) 0%, rgba(0,0,0,0) 70%);
+          border-radius: 50%;
+          animation: floatUp linear infinite;
         }
       `}</style>
 
-      {/* FIXED: Hydration safe snow rendering */}
+      {/* Bubbles / Dust rendering */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {snowflakes.map((flake, i) => (
+        {particles.map((p, i) => (
           <div
             key={i}
-            className="snowflake text-white/10"
+            className="particle"
             style={{
-              left: flake.left,
-              fontSize: flake.fontSize,
-              animationDuration: flake.animationDuration,
-              animationDelay: flake.animationDelay,
+              left: p.left,
+              width: p.size,
+              height: p.size,
+              opacity: p.opacity,
+              animationDuration: p.animationDuration,
+              animationDelay: p.animationDelay,
             }}
-          >
-            ❄
-          </div>
+          />
         ))}
       </div>
 
-      {/* 2. Flying Santa */}
-      <div
-        ref={santaRef}
-        className="absolute top-20 z-0 pointer-events-none text-6xl md:text-8xl opacity-0 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
-      >
-        🎅🦌🦌
-      </div>
-
-      {/* 3. Theme Banner */}
+      {/* 2. Theme Banner (New Year 2026 Style) */}
       <div className="relative z-20 mb-10 w-full max-w-4xl mx-auto">
-        <div className="w-full bg-gradient-to-r from-red-900/40 via-red-600/20 to-red-900/40 border border-red-500/30 rounded-xl p-4 text-center backdrop-blur-md relative overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/snow.png')] opacity-30"></div>
-          <p className="text-red-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-1">
-            Seasonal Offer
+        <div className="w-full bg-gradient-to-r from-amber-900/40 via-amber-600/20 to-amber-900/40 border border-amber-500/30 rounded-xl p-4 text-center backdrop-blur-md relative overflow-hidden">
+          {/* Subtle noise texture */}
+          <div className="absolute top-0 left-0 w-full h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+          
+          <p className="text-amber-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-1">
+            2026 KICKOFF OFFER
           </p>
           <h2 className="text-2xl md:text-3xl font-bold text-white flex justify-center items-center gap-4">
-            <span>🎄</span>
-            <span className="tracking-tighter">CHRISTMAS & NEW YEAR SALE</span>
-            <span>🔔</span>
+            <Sparkles className="text-amber-400 w-6 h-6" />
+            <span className="tracking-tighter">NEW YEAR SPECIAL</span>
+            <Sparkles className="text-amber-400 w-6 h-6" />
           </h2>
-          <p className="text-white/60 text-xs mt-2 font-mono">
-            25% OFF ON ALL PACKAGES TILL JANUARY 4TH
+          <p className="text-white/60 text-xs mt-2 font-mono uppercase">
+            Start 2026 Strong • 10% Off All Packages
           </p>
         </div>
       </div>
@@ -315,23 +280,22 @@ export default function Pricing() {
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
         {/* Left: Title */}
         <div className="flex items-center gap-3 md:gap-4">
-          <span className="text-red-500">//</span>
+          <span className="text-amber-500">//</span>
           <span className="text-white font-bold tracking-widest">
             PRICING & PACKAGES
           </span>
-          <span className="text-red-500">//</span>
+          <span className="text-amber-500">//</span>
         </div>
 
         {/* Right: Controls (Currency + Redirect Button) */}
         <div className="flex flex-col md:flex-row items-center gap-4 relative z-30 w-full md:w-auto">
-          {/* --- NEW: Redirect Button --- */}
+          {/* Redirect Button */}
           <a
             href="/pricing"
-            // FIXED: Removed 'hidden md:flex' and replaced with 'flex'
             className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors group"
           >
             View Full Page
-            <span className="bg-white/10 p-1 rounded-full text-white/50 group-hover:bg-red-600 group-hover:text-white transition-all duration-300">
+            <span className="bg-white/10 p-1 rounded-full text-white/50 group-hover:bg-amber-600 group-hover:text-white transition-all duration-300">
               <ArrowRight size={10} />
             </span>
           </a>
@@ -361,7 +325,7 @@ export default function Pricing() {
                 />
               </button>
 
-              {/* GSAP Controlled Dropdown Menu */}
+              {/* Dropdown Menu */}
               <div
                 ref={dropdownRef}
                 className="absolute top-full left-0 mt-2 w-full md:w-40 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0 origin-top"
@@ -392,7 +356,7 @@ export default function Pricing() {
                 px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
                 ${
                   currency === "INR"
-                    ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]"
+                    ? "bg-amber-600 text-white shadow-[0_0_15px_rgba(217,119,6,0.5)]"
                     : "text-gray-400 hover:text-white"
                 }
                 `}
@@ -409,7 +373,7 @@ export default function Pricing() {
         className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 relative group/grid"
       >
         {plans.map((plan) => {
-          // --- CALCULATE DISCOUNT & ROUNDING ---
+          // --- CALCULATE 10% DISCOUNT & ROUNDING ---
           const originalPrice =
             plan.prices[currency as keyof typeof plan.prices];
           const rawDiscount = originalPrice * (1 - DISCOUNT_PERCENTAGE);
@@ -421,18 +385,18 @@ export default function Pricing() {
               key={plan.name}
               className="pricing-card flex flex-col h-full relative z-10 p-6 md:p-8 rounded-3xl border border-white/5 bg-[#0a0a0a] overflow-hidden transition-transform duration-500 hover:-translate-y-2"
             >
-              {/* SPOTLIGHT GRADIENT OVERLAY - Red Tinted */}
+              {/* SPOTLIGHT GRADIENT OVERLAY - Amber/Gold Tinted */}
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100"
                 style={{
-                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(220, 38, 38, 0.1), transparent 40%)`,
+                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.15), transparent 40%)`,
                 }}
               />
-              {/* SPOTLIGHT BORDER OVERLAY - Red Tinted */}
+              {/* SPOTLIGHT BORDER OVERLAY - Amber Tinted */}
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100 z-30"
                 style={{
-                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(220, 38, 38, 0.4), transparent 40%)`,
+                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.4), transparent 40%)`,
                   maskImage:
                     "linear-gradient(black, black), linear-gradient(black, black)",
                   maskClip: "content-box, border-box",
@@ -447,37 +411,37 @@ export default function Pricing() {
                   <span className="text-white font-bold text-base md:text-lg">
                     {plan.name}
                   </span>
-                  <p className="text-[9px] mt-1 text-red-500 flex items-center gap-1">
-                    ❄️ ONE-TIME PAYMENT
+                  <p className="text-[9px] mt-1 text-amber-500 flex items-center gap-1">
+                    ✨ ONE-TIME PAYMENT
                   </p>
                 </div>
                 {/* Sale Tag */}
-                <span className="bg-red-600 text-white px-2 py-1 rounded text-[9px] font-bold animate-pulse">
-                  -25% OFF
+                <span className="bg-amber-600 text-white px-2 py-1 rounded text-[9px] font-bold animate-pulse">
+                  -10% OFF
                 </span>
               </div>
 
               {/* Price Area */}
               <div className="relative z-20 mb-6 min-h-[140px] sm:min-h-[150px] md:min-h-[170px]">
                 {/* Old Price Crossed Out */}
-                <div className="text-white/40 text-lg font-mono line-through mb-1 decoration-red-500/50">
+                <div className="text-white/40 text-lg font-mono line-through mb-1 decoration-amber-500/50">
                   {currencies[currency].symbol}
                   {originalPrice.toLocaleString()}
                 </div>
 
                 <h3 className="font-display font-black text-5xl sm:text-6xl md:text-7xl text-white tracking-tighter price-value will-change-transform">
-                  <span className="text-red-500 text-3xl md:text-5xl align-top mr-1">
+                  <span className="text-amber-500 text-3xl md:text-5xl align-top mr-1">
                     {currencies[currency].symbol}
                   </span>
                   {discountedPrice.toLocaleString()}
                 </h3>
 
                 {/* Delivery + Revisions */}
-                <div className="flex flex-wrap gap-4 mt-6 text-[9px] font-mono text-red-400 uppercase tracking-wide">
-                  <span className="border border-red-900/50 px-2 py-1 rounded bg-red-900/10">
+                <div className="flex flex-wrap gap-4 mt-6 text-[9px] font-mono text-amber-400 uppercase tracking-wide">
+                  <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
                     {plan.delivery}
                   </span>
-                  <span className="border border-red-900/50 px-2 py-1 rounded bg-red-900/10">
+                  <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
                     {plan.revisions}
                   </span>
                 </div>
@@ -499,7 +463,7 @@ export default function Pricing() {
                     }`}
                   >
                     {feature.included ? (
-                      <span className="text-red-500 shadow-[0_0_10px_rgba(220,38,38,0.4)] rounded-full">
+                      <span className="text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)] rounded-full">
                         ✓
                       </span>
                     ) : (

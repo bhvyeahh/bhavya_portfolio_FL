@@ -13,6 +13,7 @@ import {
   Zap,
   Calendar,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -23,14 +24,13 @@ const currencies = {
   USD: { symbol: "$", label: "USD ($)", rate: 1 },
   EUR: { symbol: "€", label: "EUR (€)", rate: 0.85 },
   GBP: { symbol: "£", label: "GBP (£)", rate: 0.75 },
-  INR: { symbol: "₹", label: "India (₹)", rate: 25 }, // Custom rate for Add-ons to match your PPP (20k/1k ratio)
+  INR: { symbol: "₹", label: "India (₹)", rate: 25 }, // Custom rate for Add-ons
 };
 
-// --- DATA: MAIN PLANS (RESTORED ORIGINAL STRUCTURE) ---
+// --- DATA: MAIN PLANS ---
 const plans = [
   {
     name: "BASIC",
-    // Restored specific pricing object
     prices: { USD: 1000, EUR: 850, GBP: 750, INR: 20000 },
     desc: "A professional static presence to get your business online.",
     delivery: "5-7 days",
@@ -88,7 +88,7 @@ const plans = [
   },
 ];
 
-// --- DATA: ADD-ONS (Base prices in USD) ---
+// --- DATA: ADD-ONS ---
 const addOns = [
   {
     name: "Extra Page",
@@ -117,13 +117,13 @@ const monthlyServices = [
   {
     name: "Basic Maintenance",
     basePrice: 50,
-    icon: <Zap className="text-yellow-400" />,
+    icon: <Zap className="text-amber-400" />,
     features: ["Server Monitoring", "Security Patches", "Monthly Backups"],
   },
   {
     name: "Seasonal Theme Support",
     basePrice: 150,
-    icon: <Calendar className="text-red-400" />,
+    icon: <Calendar className="text-amber-400" />,
     features: [
       "Site changes for Xmas, Halloween, etc.",
       "Holiday Banners",
@@ -135,12 +135,13 @@ const monthlyServices = [
 // --- DATA: PREMIUM FREEBIES ---
 const premiumFreebies = ["10% Discount on Future Add-Ons"];
 
-// Type definition for snowflakes
-type Snowflake = {
+// Type definition for particles (Gold Dust)
+type Particle = {
   left: string;
-  fontSize: string;
+  size: string;
   animationDuration: string;
   animationDelay: string;
+  opacity: number;
 };
 
 export default function Pricing() {
@@ -148,35 +149,34 @@ export default function Pricing() {
     "USD"
   );
   const [isOpen, setIsOpen] = useState(false);
-  const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
+  const [particles, setParticles] = useState<Particle[]>([]);
 
   const containerRef = useRef<HTMLElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const santaRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   const isGlobal = currency !== "INR";
-  const DISCOUNT_PERCENTAGE = 0.25; // 25% Discount
+  const DISCOUNT_PERCENTAGE = 0.1; // 10% Discount for New Year
 
-  // Helper for ADD-ONS only (Calculates rate based on selection)
+  // Helper for ADD-ONS only
   const getAddonPrice = (base: number) => {
     const rate = currencies[currency].rate;
-    // Round UP to nearest 10
     return Math.ceil((base * rate) / 10) * 10;
   };
 
-  // --- 0. HYDRATION FIX ---
+  // --- 0. HYDRATION FIX: Gold Dust Particles ---
   useEffect(() => {
-    const generatedFlakes = [...Array(20)].map(() => ({
+    const generatedParticles = [...Array(35)].map(() => ({
       left: `${Math.random() * 100}%`,
-      fontSize: `${Math.random() * 20 + 10}px`,
-      animationDuration: `${Math.random() * 5 + 5}s`,
+      size: `${Math.random() * 3 + 1}px`, // Small distinct particles
+      animationDuration: `${Math.random() * 15 + 10}s`, // Slow float up
       animationDelay: `${Math.random() * 5}s`,
+      opacity: Math.random() * 0.6 + 0.1,
     }));
-    setSnowflakes(generatedFlakes);
+    setParticles(generatedParticles);
   }, []);
 
-  // --- 1. ENTRANCE ANIMATIONS (Runs ONCE) ---
+  // --- 1. ENTRANCE ANIMATIONS ---
   useGSAP(
     () => {
       // Cards Entrance
@@ -199,43 +199,21 @@ export default function Pricing() {
         scrollTrigger: { trigger: ".addons-section", start: "top 85%" },
       });
 
-      // Money Assets Floating Animation
+      // Floating Money Assets
       gsap.to(".floating-asset", {
-        y: -20,
-        rotation: 5,
-        duration: 2,
+        y: -30,
+        rotation: 8,
+        duration: 4,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-        stagger: { each: 0.5, from: "random" },
-      });
-
-      // Santa Animation
-      const santaTl = gsap.timeline({ repeat: -1, repeatDelay: 5 });
-      santaTl.fromTo(
-        santaRef.current,
-        { x: "-20vw", y: "10vh", rotation: 5, opacity: 0 },
-        {
-          x: "120vw",
-          y: "-10vh",
-          rotation: -5,
-          opacity: 1,
-          duration: 15,
-          ease: "linear",
-        }
-      );
-      gsap.to(santaRef.current, {
-        y: "+=20",
-        duration: 1.5,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
+        stagger: { each: 0.8, from: "random" },
       });
     },
     { scope: containerRef }
   );
 
-  // --- 2. PRICE CHANGE ANIMATION (Runs on Currency Change) ---
+  // --- 2. PRICE CHANGE ANIMATION ---
   useGSAP(
     () => {
       gsap.fromTo(
@@ -247,7 +225,7 @@ export default function Pricing() {
     { dependencies: [currency], scope: containerRef }
   );
 
-  // --- 3. DROPDOWN ANIMATION (Runs on Open/Close) ---
+  // --- 3. DROPDOWN ANIMATION ---
   useGSAP(
     () => {
       if (isOpen) {
@@ -291,74 +269,85 @@ export default function Pricing() {
     >
       {/* --- ASSETS: FLOATING MONEY/COINS --- */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Adjusted to Gold/Amber tints using opacity and blend modes could be an enhancement, keeping original assets for now */}
         <img
-          src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png" // Coin
+          src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png"
           alt="coin"
-          className="floating-asset absolute top-20 left-10 w-16 opacity-20 blur-[2px]"
+          className="floating-asset absolute top-20 left-10 w-16 opacity-10 blur-[1px]"
         />
         <img
-          src="https://cdn-icons-png.flaticon.com/512/536/536054.png" // Money Bag
+          src="https://cdn-icons-png.flaticon.com/512/536/536054.png"
           alt="money"
-          className="floating-asset absolute bottom-40 right-10 w-24 opacity-20 blur-[1px]"
+          className="floating-asset absolute bottom-40 right-10 w-24 opacity-10 blur-[1px]"
         />
         <img
-          src="https://cdn-icons-png.flaticon.com/512/9498/9498226.png" // Diamond
+          src="https://cdn-icons-png.flaticon.com/512/9498/9498226.png"
           alt="diamond"
-          className="floating-asset absolute top-1/2 left-20 w-12 opacity-10"
+          className="floating-asset absolute top-1/2 left-20 w-12 opacity-5"
         />
       </div>
 
-      {/* --- CHRISTMAS SNOW & SANTA --- */}
+      {/* --- NEW YEAR GOLD DUST PARTICLES --- */}
       <style jsx>{`
-        @keyframes snow {
+        @keyframes floatUp {
           0% {
-            transform: translateY(-100vh);
+            transform: translateY(100vh) scale(0.5);
             opacity: 0;
           }
-          50% {
+          20% {
             opacity: 1;
           }
           100% {
-            transform: translateY(100vh);
+            transform: translateY(-10vh) scale(1.2);
             opacity: 0;
           }
         }
-        .snowflake {
+        .particle {
           position: absolute;
-          top: -10px;
-          color: white;
-          opacity: 0.8;
-          animation: snow linear infinite;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(251, 191, 36, 0.8) 0%,
+            rgba(0, 0, 0, 0) 70%
+          );
+          animation: floatUp linear infinite;
         }
       `}</style>
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {snowflakes.map((flake, i) => (
-          <div key={i} className="snowflake text-white/10" style={{ ...flake }}>
-            ❄
-          </div>
+        {particles.map((p, i) => (
+          <div
+            key={i}
+            className="particle"
+            style={{
+              left: p.left,
+              width: p.size,
+              height: p.size,
+              opacity: p.opacity,
+              animationDuration: p.animationDuration,
+              animationDelay: p.animationDelay,
+            }}
+          />
         ))}
       </div>
-      <div
-        ref={santaRef}
-        className="absolute top-20 z-0 pointer-events-none text-6xl md:text-8xl opacity-0 filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]"
-      >
-        🎅🦌🦌
-      </div>
 
-      {/* --- HEADER --- */}
+      {/* --- HEADER BANNER (NEW YEAR THEME) --- */}
       <div className="relative z-20 mb-10 w-full max-w-4xl mx-auto text-center">
-        <div className="inline-block bg-gradient-to-r from-red-900/40 via-red-600/20 to-red-900/40 border border-red-500/30 rounded-xl p-4 backdrop-blur-md relative overflow-hidden mb-10">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/snow.png')] opacity-30"></div>
-          <p className="text-red-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-1">
-            Seasonal Offer
+        <div className="inline-block bg-gradient-to-r from-amber-900/40 via-amber-600/20 to-amber-900/40 border border-amber-500/30 rounded-xl p-4 backdrop-blur-md relative overflow-hidden mb-10 shadow-[0_0_30px_rgba(245,158,11,0.1)]">
+          {/* Subtle noise/texture overlay */}
+          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+
+          <p className="text-amber-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-1">
+            2026 KICKOFF OFFER
           </p>
           <h2 className="text-2xl md:text-3xl font-bold text-white flex justify-center items-center gap-4">
-            <span>🎄</span>
-            <span className="tracking-tighter">CHRISTMAS SALE</span>
-            <span>🔔</span>
+            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
+            <span className="tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-100 to-white">
+              NEW YEAR SPECIAL
+            </span>
+            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
           </h2>
           <p className="text-white/60 text-xs mt-2 font-mono">
-            25% OFF PACKAGES • ENDS JAN 4TH
+            START 2026 STRONG • 10% OFF ALL PACKAGES
           </p>
         </div>
       </div>
@@ -367,11 +356,11 @@ export default function Pricing() {
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
         {/* Left: Title */}
         <div className="flex items-center gap-3 md:gap-4">
-          <span className="text-red-500">//</span>
+          <span className="text-amber-500">//</span>
           <span className="text-white font-bold tracking-widest">
             PRICING & PACKAGES
           </span>
-          <span className="text-red-500">//</span>
+          <span className="text-amber-500">//</span>
 
           {/* Styled Home Button */}
           <Link
@@ -382,9 +371,18 @@ export default function Pricing() {
           </Link>
         </div>
 
-        {/* Right: Controls (Currency + Redirect Button) */}
+        {/* Right: Controls */}
         <div className="flex flex-col md:flex-row items-center gap-4 relative z-30 w-full md:w-auto">
           {/* View Full Page Button */}
+          <a
+            href="/pricing"
+            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors group"
+          >
+            View Full Page
+            <span className="bg-white/10 p-1 rounded-full text-white/50 group-hover:bg-amber-600 group-hover:text-black transition-all duration-300">
+              <ArrowRight size={10} />
+            </span>
+          </a>
 
           {/* Currency Selector */}
           <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2 w-full md:w-auto justify-between md:justify-start">
@@ -392,14 +390,14 @@ export default function Pricing() {
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
-                            w-full md:w-auto px-5 py-2 rounded-full text-[10px] font-bold uppercase 
-                            flex items-center justify-between md:justify-center gap-2 transition-all duration-300
-                            ${
-                              isGlobal
-                                ? "bg-white text-black"
-                                : "text-gray-400 hover:text-white"
-                            }
-                        `}
+                    w-full md:w-auto px-5 py-2 rounded-full text-[10px] font-bold uppercase 
+                    flex items-center justify-between md:justify-center gap-2 transition-all duration-300
+                    ${
+                      isGlobal
+                        ? "bg-white text-black"
+                        : "text-gray-400 hover:text-white"
+                    }
+                `}
               >
                 {isGlobal ? currencies[currency].label : "Global"}
                 <ChevronDown
@@ -435,13 +433,13 @@ export default function Pricing() {
                 setIsOpen(false);
               }}
               className={`
-                    px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
-                    ${
-                      currency === "INR"
-                        ? "bg-red-600 text-white shadow-[0_0_15px_rgba(220,38,38,0.5)]"
-                        : "text-gray-400 hover:text-white"
-                    }
-                    `}
+                  px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
+                  ${
+                    currency === "INR"
+                      ? "bg-amber-600 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]"
+                      : "text-gray-400 hover:text-white"
+                  }
+              `}
             >
               India (₹)
             </button>
@@ -455,11 +453,9 @@ export default function Pricing() {
         className="pricing-grid max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 relative group/grid mb-24"
       >
         {plans.map((plan) => {
-          // --- FIXED: USE HARDCODED PRICES ---
+          // Calculate Price
           const originalPrice =
             plan.prices[currency as keyof typeof plan.prices];
-
-          // Apply discount and round up to nearest 50
           const discountedPrice =
             Math.ceil((originalPrice * (1 - DISCOUNT_PERCENTAGE)) / 50) * 50;
 
@@ -468,17 +464,17 @@ export default function Pricing() {
               key={plan.name}
               className="pricing-card flex flex-col h-full relative z-10 p-6 md:p-8 rounded-3xl border border-white/5 bg-[#0a0a0a] overflow-hidden transition-transform duration-500 hover:-translate-y-2"
             >
-              {/* Spotlight Gradients */}
+              {/* Spotlight Gradients (Amber Tinted) */}
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100"
                 style={{
-                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(220, 38, 38, 0.1), transparent 40%)`,
+                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.15), transparent 40%)`,
                 }}
               />
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100 z-30"
                 style={{
-                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(220, 38, 38, 0.4), transparent 40%)`,
+                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.4), transparent 40%)`,
                   maskImage:
                     "linear-gradient(black, black), linear-gradient(black, black)",
                   maskClip: "content-box, border-box",
@@ -487,36 +483,37 @@ export default function Pricing() {
                 }}
               />
 
-              {/* Card Content */}
               <div className="relative z-20">
                 <div className="flex justify-between items-start mb-6 border-b border-white/5 pb-6">
                   <div>
                     <h3 className="text-white font-bold text-lg">
                       {plan.name}
                     </h3>
-                    <p className="text-[9px] text-red-500 mt-1">❄️ ONE-TIME</p>
+                    <p className="text-[9px] text-amber-500 mt-1 flex items-center gap-1">
+                      ✨ ONE-TIME
+                    </p>
                   </div>
-                  <span className="bg-red-600 text-white px-2 py-1 rounded text-[9px] font-bold">
-                    -25%
+                  <span className="bg-amber-600 text-black px-2 py-1 rounded text-[9px] font-bold">
+                    -10%
                   </span>
                 </div>
 
                 <div className="mb-6 h-[140px]">
-                  <div className="text-white/40 text-lg font-mono line-through decoration-red-500/50">
+                  <div className="text-white/40 text-lg font-mono line-through decoration-amber-500/50">
                     {currencies[currency].symbol}
                     {originalPrice.toLocaleString()}
                   </div>
                   <div className="text-5xl md:text-6xl font-black text-white tracking-tighter price-value">
-                    <span className="text-red-500 text-3xl align-top mr-1">
+                    <span className="text-amber-500 text-3xl align-top mr-1">
                       {currencies[currency].symbol}
                     </span>
                     {discountedPrice.toLocaleString()}
                   </div>
-                  <div className="flex gap-2 mt-4 text-[9px] font-mono text-red-400 uppercase">
-                    <span className="border border-red-900/50 px-2 py-1 rounded bg-red-900/10">
+                  <div className="flex gap-2 mt-4 text-[9px] font-mono text-amber-400 uppercase">
+                    <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
                       {plan.delivery}
                     </span>
-                    <span className="border border-red-900/50 px-2 py-1 rounded bg-red-900/10">
+                    <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
                       {plan.revisions}
                     </span>
                   </div>
@@ -527,11 +524,13 @@ export default function Pricing() {
                     <li
                       key={i}
                       className={`text-xs flex gap-3 ${
-                        f.included ? "text-white" : "text-white/20 line-through"
+                        f.included
+                          ? "text-white"
+                          : "text-white/20 line-through decoration-white/20"
                       }`}
                     >
                       {f.included ? (
-                        <Check size={14} className="text-red-500" />
+                        <Check size={14} className="text-amber-500" />
                       ) : (
                         <X size={14} />
                       )}{" "}
@@ -540,19 +539,18 @@ export default function Pricing() {
                   ))}
                 </ul>
 
-                {/* Premium Freebies Highlight */}
                 {plan.name === "PREMIUM" && (
-                  <div className="mt-8 bg-gradient-to-b from-yellow-900/20 to-transparent border border-yellow-600/30 p-4 rounded-xl">
-                    <p className="text-yellow-500 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <div className="mt-8 bg-gradient-to-b from-amber-900/20 to-transparent border border-amber-600/30 p-4 rounded-xl">
+                    <p className="text-amber-500 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
                       <Star size={12} fill="currentColor" /> Premium Bonuses
                     </p>
                     <ul className="space-y-1">
                       {premiumFreebies.map((freebie, i) => (
                         <li
                           key={i}
-                          className="text-[10px] text-yellow-200/80 flex items-center gap-2"
+                          className="text-[10px] text-amber-200/80 flex items-center gap-2"
                         >
-                          <span className="w-1 h-1 rounded-full bg-yellow-500"></span>{" "}
+                          <span className="w-1 h-1 rounded-full bg-amber-500"></span>{" "}
                           {freebie}
                         </li>
                       ))}
@@ -571,19 +569,19 @@ export default function Pricing() {
           {/* LEFT: A LA CARTE EXTRAS */}
           <div>
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Plus className="text-red-500" /> Additional Services
+              <Plus className="text-amber-500" /> Additional Services
             </h3>
             <div className="flex flex-col gap-4">
               {addOns.map((addon, i) => (
                 <div
                   key={i}
-                  className="addon-row interactive-card group relative bg-[#0a0a0a] border border-white/5 p-4 rounded-xl flex justify-between items-center overflow-hidden hover:border-red-500/30 transition-colors"
+                  className="interactive-card group relative bg-[#0a0a0a] border border-white/5 p-4 rounded-xl flex justify-between items-center overflow-hidden hover:border-amber-500/30 transition-colors"
                 >
                   {/* Spotlight for Addons */}
                   <div
                     className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
                     style={{
-                      background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(220, 38, 38, 0.1), transparent 40%)`,
+                      background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.1), transparent 40%)`,
                     }}
                   />
 
@@ -594,9 +592,8 @@ export default function Pricing() {
                     <p className="text-white/40 text-[10px]">{addon.desc}</p>
                   </div>
                   <div className="text-right relative z-10">
-                    <span className="text-red-400 font-bold font-mono block price-value">
-                      {/* FIXED: USE HELPER FOR ADD-ONS */}+
-                      {currencies[currency].symbol}
+                    <span className="text-amber-400 font-bold font-mono block price-value">
+                      +{currencies[currency].symbol}
                       {getAddonPrice(addon.basePrice).toLocaleString()}
                     </span>
                   </div>
@@ -608,7 +605,7 @@ export default function Pricing() {
           {/* RIGHT: MONTHLY RETAINERS */}
           <div>
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Calendar className="text-red-500" /> Monthly Care Plans
+              <Calendar className="text-amber-500" /> Monthly Care Plans
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {monthlyServices.map((service, i) => (
@@ -639,7 +636,6 @@ export default function Pricing() {
                   </div>
                   <div className="border-t border-white/5 pt-4 relative z-10">
                     <span className="text-white font-bold font-mono text-lg price-value">
-                      {/* FIXED: USE HELPER FOR MONTHLY */}
                       {currencies[currency].symbol}
                       {getAddonPrice(service.basePrice).toLocaleString()}
                     </span>
@@ -652,8 +648,8 @@ export default function Pricing() {
             </div>
 
             {/* Note about Premium */}
-            <div className="mt-6 p-4 bg-red-900/10 border border-red-500/20 rounded-xl text-center">
-              <p className="text-red-200 text-xs">
+            <div className="mt-6 p-4 bg-amber-900/10 border border-amber-500/20 rounded-xl text-center">
+              <p className="text-amber-200 text-xs">
                 <span className="font-bold">✨ Pro Tip:</span> Buy the{" "}
                 <span className="text-white font-bold">PREMIUM</span> package
                 and get 1 month of Maintenance for FREE!
