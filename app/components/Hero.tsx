@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ArrowUpRight, Globe } from "lucide-react";
+import { ArrowUpRight, Globe, Calendar } from "lucide-react";
 import Link from "next/link";
 
 export default function Hero() {
@@ -173,6 +173,17 @@ export default function Hero() {
             Stop chasing clients. I build high-converting websites that automate
             your calendar, track revenue, and reduce no-shows so you can focus on detailing.
           </p>
+          
+          {/* --- NEW HERO CTA --- */}
+          <Link href="https://calendly.com/bhavyarathore575/30min" target="_blank" className="hero-sub-item mt-2">
+            <button className="relative px-8 py-3 bg-white text-black font-bold uppercase text-xs tracking-widest rounded-full overflow-hidden group hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                <span className="relative z-10 flex items-center gap-2">
+                    Book Strategy Call <Calendar size={14} />
+                </span>
+                <div className="absolute inset-0 bg-brand-green transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
+            </button>
+          </Link>
+
         </div>
       </div>
 

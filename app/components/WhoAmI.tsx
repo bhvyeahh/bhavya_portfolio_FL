@@ -4,19 +4,19 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Globe } from "lucide-react";
+import { Globe, LayoutTemplate } from "lucide-react";
 
-// Register ScrollTrigger (just in case it's not global yet)
+// Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
-// --- UPDATED SKILLS FOR DETAILER NICHE ---
+// --- AGENCY LEVEL SKILLS ---
 const skills = [
-  "BOOKING ENGINES",
-  "CALENDAR SYNC",
-  "PAYMENT GATEWAYS",
-  "NEXT.JS / REACT",
-  "GOOGLE MAPS SEO",
-  "DASHBOARDS",
+  "AUTOMATED BOOKINGS",
+  "CONVERSION SYSTEMS",
+  "LOCAL SEO DOMINANCE",
+  "CRM INTEGRATIONS",
+  "SPEED OPTIMIZATION",
+  "REVENUE TRACKING",
 ];
 
 // --- GSAP TypingText Component ---
@@ -35,7 +35,7 @@ const TypingText = ({
         <span
           key={index}
           className="typing-char inline-block translate-y-full opacity-0 will-change-transform"
-          data-delay={delay} // We pass delay to read it in the main timeline
+          data-delay={delay}
         >
           {letter === " " ? "\u00A0" : letter}
         </span>
@@ -52,29 +52,24 @@ export default function WhoAmI() {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
-          start: "top 60%", // Starts when top of section hits 60% of viewport
+          start: "top 60%",
           toggleActions: "play none none reverse",
         },
       });
 
-      // 1. Image "Cyber Scan" Reveal (The Mind-Blowing part)
-      // We animate the bars *out* to reveal the image, or animate them *in* to construct it.
-      // Let's animate the bars scaling Y to create a "digital reconstruction" vibe.
+      // 1. Image "Cyber Scan" Reveal
       tl.from(".slice-bar", {
         scaleY: 0,
         transformOrigin: "top",
         duration: 0.8,
         stagger: {
           amount: 0.5,
-          from: "random", // Randomizes the order for a glitch effect
+          from: "random",
         },
         ease: "power2.inOut",
       });
 
-      // 2. Text Reveal (Reading the delay prop we set earlier doesn't work easily with batch selection)
-      // So we just stagger them manually in groups for precise control.
-
-      // Group 1: "INDIA, BASE"
+      // 2. Text Reveal
       tl.to(
         ".typing-char",
         {
@@ -82,7 +77,7 @@ export default function WhoAmI() {
           opacity: 1,
           duration: 0.8,
           stagger: 0.02,
-          ease: "back.out(1.7)", // Nice pop effect
+          ease: "back.out(1.7)",
         },
         "-=0.4"
       );
@@ -100,9 +95,9 @@ export default function WhoAmI() {
         "-=0.5"
       );
 
-      // 4. Globe Spin In
+      // 4. Icon Spin In
       tl.from(
-        ".globe-icon",
+        ".brand-icon",
         {
           scale: 0,
           rotation: -180,
@@ -113,13 +108,12 @@ export default function WhoAmI() {
         "-=0.8"
       );
 
-      // 5. Parallax Effect on Mouse Move
+      // 5. Parallax Effect
       const handleMouseMove = (e: MouseEvent) => {
         const { clientX, clientY } = e;
         const xPos = (clientX / window.innerWidth - 0.5) * 15;
         const yPos = (clientY / window.innerHeight - 0.5) * 15;
 
-        // Move Image Text slightly opposite to mouse
         gsap.to(".parallax-target", {
           x: xPos,
           y: yPos,
@@ -127,7 +121,6 @@ export default function WhoAmI() {
           ease: "power2.out",
         });
 
-        // Move Image bars slightly for depth
         gsap.to(".slice-bar", {
           x: -xPos * 0.5,
           duration: 1,
@@ -158,32 +151,34 @@ export default function WhoAmI() {
       {/* --- TOP MARKERS --- */}
       <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-8 relative z-50">
         <span>//</span>
-        <span className="text-white font-bold tracking-widest">WHO AM I</span>
+        <span className="text-white font-bold tracking-widest">ABOUT LAYOUTORY</span>
         <span>//</span>
       </div>
 
       {/* --- MAIN CONTENT WRAPPER --- */}
       <div className="relative flex-grow w-full h-full flex flex-col lg:block">
+        
         {/* LEFT TEXT BLOCK */}
         <div className="relative z-30 pt-2 md:pt-10 pointer-events-none parallax-target">
-          {/* Location Typography */}
+          
+          {/* Main Typography - "SYSTEM ARCHITECT" */}
           <h2
             className="
               font-display font-black 
-              text-[12vw] md:text-[13vw] 
+              text-[13vw] md:text-[12vw] 
               leading-[0.8] 
               uppercase text-white tracking-tighter
             "
           >
-            <TypingText text="INDIA," delay={0.1} />
+            <TypingText text="," delay={0.1} />
             <br />
-            <TypingText text="BASED" delay={0.4} />
+            <TypingText text="" delay={0.4} />
           </h2>
 
           {/* Skills Pills */}
           <div
             className="
-              mt-6 md:mt-10 
+              mt-8 md:mt-12 
               flex flex-wrap gap-2 md:gap-3 
               max-w-full md:max-w-lg 
               pointer-events-auto pr-4 md:pr-0
@@ -208,11 +203,11 @@ export default function WhoAmI() {
             ))}
           </div>
 
-          {/* Globe Icon */}
-          <div className="globe-icon mt-6 md:mt-8 pointer-events-auto inline-block">
-            <Globe
-              className="w-8 h-8 md:w-12 md:h-12 text-white animate-spin-slow"
-              strokeWidth={0.8}
+          {/* Agency Icon */}
+          <div className="brand-icon mt-8 md:mt-10 pointer-events-auto inline-block">
+            <LayoutTemplate
+              className="w-8 h-8 md:w-12 md:h-12 text-brand-green animate-pulse"
+              strokeWidth={1}
             />
           </div>
         </div>
@@ -233,7 +228,7 @@ export default function WhoAmI() {
           <div className="relative w-full h-full">
             <img
               src="/mypfp.jpg"
-              alt="Profile"
+              alt="Founder"
               className="w-full h-full object-cover object-top opacity-90 grayscale contrast-125"
             />
 
@@ -251,14 +246,14 @@ export default function WhoAmI() {
               ))}
             </div>
 
-            {/* Gradients */}
+            {/* Gradients to blend into background */}
             <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent"></div>
             <div className="absolute top-0 right-0 w-1/4 h-full bg-gradient-to-l from-[#050505] to-transparent"></div>
           </div>
         </div>
       </div>
 
-      {/* --- BOTTOM JOB TITLE / DESCRIPTION --- */}
+      {/* --- BOTTOM AGENCY STATEMENT --- */}
       <div
         className="
           relative z-40 mt-auto pt-10 
@@ -278,16 +273,15 @@ export default function WhoAmI() {
               mix-blend-difference
             "
           >
-            {/* UPDATED TITLE FOR NICHE */}
-            <TypingText text="NICHE/" delay={0.2} />
+            <TypingText text="AGENCY /" delay={0.2} />
             <br />
-            <TypingText text="SPECIALIST" delay={0.5} />
+            <TypingText text="STANDARD" delay={0.5} />
           </h2>
         </div>
 
         <div
           className="
-            max-w-[260px] md:max-w-xs 
+            max-w-[280px] md:max-w-sm 
             text-right md:text-right 
             text-[10px] md:text-xs 
             text-gray-400 leading-relaxed 
@@ -298,10 +292,9 @@ export default function WhoAmI() {
         >
           {/* Note: Standard text fade in for long paragraph is better than typing effect */}
           <div className="typing-char opacity-0 translate-y-4">
-            {/* UPDATED DESCRIPTION FOR BUSINESS VALUE */}
-            I build automated booking engines for Mobile Car Detailers & Cafes.
-            My systems fill your calendar, handle payments, and track revenue
-            while you focus on the work.
+            Layoutory isn't just about code. We engineer high-performance 
+            digital ecosystems. From automated booking engines to seamless 
+            payment flows, we build the infrastructure that scales your business.
           </div>
         </div>
       </div>

@@ -24,7 +24,7 @@ const currencies = {
   USD: { symbol: "$", label: "USD ($)", rate: 1 },
   EUR: { symbol: "€", label: "EUR (€)", rate: 0.85 },
   GBP: { symbol: "£", label: "GBP (£)", rate: 0.75 },
-  INR: { symbol: "₹", label: "India (₹)", rate: 25 }, // Custom rate for Add-ons
+  INR: { symbol: "₹", label: "India (₹)", rate: 25 },
 };
 
 // --- DATA: MAIN PLANS ---
@@ -135,7 +135,6 @@ const monthlyServices = [
 // --- DATA: PREMIUM FREEBIES ---
 const premiumFreebies = ["10% Discount on Future Add-Ons"];
 
-// Type definition for particles (Gold Dust)
 type Particle = {
   left: string;
   size: string;
@@ -145,9 +144,7 @@ type Particle = {
 };
 
 export default function Pricing() {
-  const [currency, setCurrency] = useState<"USD" | "EUR" | "GBP" | "INR">(
-    "USD"
-  );
+  const [currency, setCurrency] = useState<"USD" | "EUR" | "GBP" | "INR">("USD");
   const [isOpen, setIsOpen] = useState(false);
   const [particles, setParticles] = useState<Particle[]>([]);
 
@@ -156,40 +153,54 @@ export default function Pricing() {
   const cardsRef = useRef<HTMLDivElement>(null);
 
   const isGlobal = currency !== "INR";
-  const DISCOUNT_PERCENTAGE = 0.1; // 10% Discount for New Year
+  const DISCOUNT_PERCENTAGE = 0.1;
 
-  // Helper for ADD-ONS only
   const getAddonPrice = (base: number) => {
     const rate = currencies[currency].rate;
     return Math.ceil((base * rate) / 10) * 10;
   };
 
-  // --- 0. HYDRATION FIX: Gold Dust Particles ---
   useEffect(() => {
     const generatedParticles = [...Array(35)].map(() => ({
       left: `${Math.random() * 100}%`,
-      size: `${Math.random() * 3 + 1}px`, // Small distinct particles
-      animationDuration: `${Math.random() * 15 + 10}s`, // Slow float up
+      size: `${Math.random() * 3 + 1}px`,
+      animationDuration: `${Math.random() * 15 + 10}s`,
       animationDelay: `${Math.random() * 5}s`,
       opacity: Math.random() * 0.6 + 0.1,
     }));
     setParticles(generatedParticles);
   }, []);
 
-  // --- 1. ENTRANCE ANIMATIONS ---
+  // --- GSAP ANIMATIONS ---
   useGSAP(
     () => {
-      // Cards Entrance
-      gsap.from(".pricing-card", {
-        y: 100,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".pricing-grid", start: "top 80%" },
+      // Desktop: Staggered Entrance
+      const mm = gsap.matchMedia();
+      
+      mm.add("(min-width: 768px)", () => {
+        gsap.from(".pricing-card", {
+          y: 100,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.2,
+          ease: "power3.out",
+          scrollTrigger: { trigger: ".pricing-grid", start: "top 80%" },
+        });
       });
 
-      // Add-ons Entrance
+      // Mobile: Side entrance
+      mm.add("(max-width: 767px)", () => {
+        gsap.from(".pricing-card", {
+            x: 100,
+            opacity: 0,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: "power2.out",
+            scrollTrigger: { trigger: ".pricing-grid", start: "top 80%" },
+        });
+      });
+
+      // Other animations (keep same)
       gsap.from(".interactive-card", {
         y: 50,
         opacity: 0,
@@ -199,7 +210,6 @@ export default function Pricing() {
         scrollTrigger: { trigger: ".addons-section", start: "top 85%" },
       });
 
-      // Floating Money Assets
       gsap.to(".floating-asset", {
         y: -30,
         rotation: 8,
@@ -213,7 +223,6 @@ export default function Pricing() {
     { scope: containerRef }
   );
 
-  // --- 2. PRICE CHANGE ANIMATION ---
   useGSAP(
     () => {
       gsap.fromTo(
@@ -225,7 +234,6 @@ export default function Pricing() {
     { dependencies: [currency], scope: containerRef }
   );
 
-  // --- 3. DROPDOWN ANIMATION ---
   useGSAP(
     () => {
       if (isOpen) {
@@ -249,7 +257,6 @@ export default function Pricing() {
     { dependencies: [isOpen], scope: containerRef }
   );
 
-  // Spotlight Effect
   const handleMouseMove = (e: React.MouseEvent) => {
     const cards = document.querySelectorAll(".interactive-card, .pricing-card");
     cards.forEach((card) => {
@@ -265,11 +272,10 @@ export default function Pricing() {
     <section
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      className="relative w-full bg-[#050505] py-20 md:py-32 px-6 md:px-12 lg:px-20 border-t border-white/5 overflow-hidden font-sans"
+      className="relative w-full bg-[#050505] py-20 md:py-32 px-0 md:px-12 lg:px-20 border-t border-white/5 overflow-hidden font-sans"
     >
       {/* --- ASSETS: FLOATING MONEY/COINS --- */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        {/* Adjusted to Gold/Amber tints using opacity and blend modes could be an enhancement, keeping original assets for now */}
         <img
           src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png"
           alt="coin"
@@ -287,32 +293,24 @@ export default function Pricing() {
         />
       </div>
 
-      {/* --- NEW YEAR GOLD DUST PARTICLES --- */}
-      <style jsx>{`
+      {/* --- CSS via Style Tag (Crash Proof) --- */}
+      <style dangerouslySetInnerHTML={{__html: `
         @keyframes floatUp {
-          0% {
-            transform: translateY(100vh) scale(0.5);
-            opacity: 0;
-          }
-          20% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateY(-10vh) scale(1.2);
-            opacity: 0;
-          }
+          0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+          20% { opacity: 1; }
+          100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
         .particle {
           position: absolute;
           border-radius: 50%;
-          background: radial-gradient(
-            circle,
-            rgba(251, 191, 36, 0.8) 0%,
-            rgba(0, 0, 0, 0) 70%
-          );
+          background: radial-gradient(circle, rgba(251, 191, 36, 0.8) 0%, rgba(0, 0, 0, 0) 70%);
           animation: floatUp linear infinite;
         }
-      `}</style>
+        /* Hide Scrollbar */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}} />
+
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {particles.map((p, i) => (
           <div
@@ -330,10 +328,9 @@ export default function Pricing() {
         ))}
       </div>
 
-      {/* --- HEADER BANNER (NEW YEAR THEME) --- */}
-      <div className="relative z-20 mb-10 w-full max-w-4xl mx-auto text-center">
+      {/* --- HEADER BANNER --- */}
+      <div className="relative z-20 mb-10 w-full max-w-4xl mx-auto text-center px-6">
         <div className="inline-block bg-gradient-to-r from-amber-900/40 via-amber-600/20 to-amber-900/40 border border-amber-500/30 rounded-xl p-4 backdrop-blur-md relative overflow-hidden mb-10 shadow-[0_0_30px_rgba(245,158,11,0.1)]">
-          {/* Subtle noise/texture overlay */}
           <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
 
           <p className="text-amber-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-1">
@@ -353,16 +350,13 @@ export default function Pricing() {
       </div>
 
       {/* Header Controls */}
-      <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
-        {/* Left: Title */}
+      <div className="px-6 w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
         <div className="flex items-center gap-3 md:gap-4">
           <span className="text-amber-500">//</span>
           <span className="text-white font-bold tracking-widest">
             PRICING & PACKAGES
           </span>
           <span className="text-amber-500">//</span>
-
-          {/* Styled Home Button */}
           <Link
             href="/"
             className="ml-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-[10px] font-mono text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 uppercase tracking-widest"
@@ -371,12 +365,10 @@ export default function Pricing() {
           </Link>
         </div>
 
-        {/* Right: Controls */}
         <div className="flex flex-col md:flex-row items-center gap-4 relative z-30 w-full md:w-auto">
-          {/* View Full Page Button */}
           <a
             href="/pricing"
-            className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors group"
+            className="hidden md:flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors group"
           >
             View Full Page
             <span className="bg-white/10 p-1 rounded-full text-white/50 group-hover:bg-amber-600 group-hover:text-black transition-all duration-300">
@@ -384,7 +376,6 @@ export default function Pricing() {
             </span>
           </a>
 
-          {/* Currency Selector */}
           <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2 w-full md:w-auto justify-between md:justify-start">
             <div className="relative w-full md:w-auto">
               <button
@@ -447,13 +438,20 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* --- MAIN PRICING GRID --- */}
+      {/* --- MAIN PRICING GRID (HORIZONTAL SCROLL ON MOBILE) --- */}
       <div
         ref={cardsRef}
-        className="pricing-grid max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 relative group/grid mb-24"
+        className="
+            pricing-grid max-w-7xl mx-auto relative group/grid mb-24
+            
+            /* Mobile Scroll Settings */
+            flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 px-6 pb-12 scrollbar-hide
+            
+            /* Desktop Grid Settings */
+            md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-12 md:pb-0 md:px-0
+        "
       >
         {plans.map((plan) => {
-          // Calculate Price
           const originalPrice =
             plan.prices[currency as keyof typeof plan.prices];
           const discountedPrice =
@@ -462,9 +460,17 @@ export default function Pricing() {
           return (
             <div
               key={plan.name}
-              className="pricing-card flex flex-col h-full relative z-10 p-6 md:p-8 rounded-3xl border border-white/5 bg-[#0a0a0a] overflow-hidden transition-transform duration-500 hover:-translate-y-2"
+              className="
+                pricing-card 
+                flex flex-col h-full relative z-10 
+                p-6 md:p-8 
+                rounded-3xl border border-white/5 bg-[#0a0a0a] 
+                overflow-hidden transition-transform duration-500 hover:-translate-y-2
+                
+                /* Mobile Card Width */
+                min-w-[85vw] sm:min-w-[60vw] md:min-w-0 snap-center
+              "
             >
-              {/* Spotlight Gradients (Amber Tinted) */}
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100"
                 style={{
@@ -561,10 +567,12 @@ export default function Pricing() {
             </div>
           );
         })}
+        {/* Spacer for mobile to see last card properly */}
+        <div className="min-w-[4vw] md:hidden"></div>
       </div>
 
       {/* --- EXTRA SERVICES SECTION (ADD-ONS) --- */}
-      <div className="addons-section max-w-7xl mx-auto relative z-20">
+      <div className="addons-section max-w-7xl mx-auto relative z-20 px-6 md:px-0">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* LEFT: A LA CARTE EXTRAS */}
           <div>
@@ -577,7 +585,6 @@ export default function Pricing() {
                   key={i}
                   className="interactive-card group relative bg-[#0a0a0a] border border-white/5 p-4 rounded-xl flex justify-between items-center overflow-hidden hover:border-amber-500/30 transition-colors"
                 >
-                  {/* Spotlight for Addons */}
                   <div
                     className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
                     style={{
@@ -613,7 +620,6 @@ export default function Pricing() {
                   key={i}
                   className="interactive-card relative bg-[#0a0a0a] border border-white/5 p-6 rounded-xl flex flex-col justify-between overflow-hidden group hover:border-white/20 transition-colors"
                 >
-                  {/* Spotlight for Monthly */}
                   <div
                     className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
                     style={{
@@ -647,7 +653,6 @@ export default function Pricing() {
               ))}
             </div>
 
-            {/* Note about Premium */}
             <div className="mt-6 p-4 bg-amber-900/10 border border-amber-500/20 rounded-xl text-center">
               <p className="text-amber-200 text-xs">
                 <span className="font-bold">✨ Pro Tip:</span> Buy the{" "}
