@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"], variable: '--font-inter' });
 
 export const metadata: Metadata = {
   title: "Bhavya Rathore | Layoutory",
-  description: "Helping businesses grow with high-converting websites.",
+  description: "Helping detailers grow with high-converting websites.",
 };
 
 export default function RootLayout({
