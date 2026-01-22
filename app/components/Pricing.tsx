@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ChevronDown, Check, X, ArrowRight, Sparkles } from "lucide-react";
+import { ChevronDown, Check, X, ArrowRight, Sparkles, FileText } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- DATA (Unchanged) ---
+// --- DATA (Updated with 'pages') ---
 const plans = [
   {
     name: "BASIC",
@@ -21,6 +21,7 @@ const plans = [
     desc: "A professional static presence to get your business online.",
     delivery: "5-7 days delivery",
     revisions: "2 Rounds of Revisions",
+    pages: "Single Page / Landing", // ADDED
     features: [
       { text: "Mobile Responsive Design", included: true },
       { text: "Social Media Integration", included: true },
@@ -45,6 +46,7 @@ const plans = [
     desc: "Dynamic site with a CMS for businesses that update content often.",
     delivery: "10-14 days delivery",
     revisions: "3 Rounds of Revisions",
+    pages: "Up to 7 Pages", // ADDED
     features: [
       { text: "Mobile Responsive Design", included: true },
       { text: "Social Media Integration", included: true },
@@ -69,6 +71,7 @@ const plans = [
     desc: "Full-scale E-commerce solution with payments and advanced logic.",
     delivery: "3-4 Weeks delivery",
     revisions: "5 Rounds of Revisions",
+    pages: "Up to 15 Pages", // ADDED
     features: [
       { text: "Mobile Responsive Design", included: true },
       { text: "Social Media Integration", included: true },
@@ -110,7 +113,7 @@ export default function Pricing() {
   const cardsRef = useRef<HTMLDivElement>(null);
 
   const isGlobal = currency !== "INR";
-  const DISCOUNT_PERCENTAGE = 0.10; // UPDATED: 10% Discount
+  const DISCOUNT_PERCENTAGE = 0.10; // 10% Discount
 
   // --- 0. HYDRATION FIX: Generate Particles (Gold Dust) on Mount ---
   useEffect(() => {
@@ -436,13 +439,18 @@ export default function Pricing() {
                   {discountedPrice.toLocaleString()}
                 </h3>
 
-                {/* Delivery + Revisions */}
-                <div className="flex flex-wrap gap-4 mt-6 text-[9px] font-mono text-amber-400 uppercase tracking-wide">
+                {/* Delivery + Revisions + PAGES (Metadata Row) */}
+                <div className="flex flex-wrap gap-2 mt-6 text-[9px] font-mono text-amber-400 uppercase tracking-wide">
                   <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
                     {plan.delivery}
                   </span>
                   <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
                     {plan.revisions}
+                  </span>
+                  {/* --- NEW: PAGES COMPARISON CHIP --- */}
+                  <span className="border border-amber-500/40 px-2 py-1 rounded bg-amber-500/10 text-white font-bold flex items-center gap-1">
+                    <FileText size={10} className="text-amber-500" />
+                    {plan.pages}
                   </span>
                 </div>
 

@@ -5,41 +5,42 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { Plus, Minus } from "lucide-react";
 
+// --- UPDATED FAQ DATA FOR DETAILER & CAFE NICHE ---
 const faqs = [
+  {
+    question: "I'M NOT TECH SAVVY. IS THIS HARD TO MANAGE?",
+    answer:
+      "Not at all. I build the system to run on autopilot. Clients book online, the calendar updates itself, and you get a text notification with the job details. If you can use a smartphone, you can manage this site.",
+  },
+  {
+    question: "CAN I TAKE DEPOSITS TO PREVENT NO-SHOWS?",
+    answer:
+      "Yes. This is a standard feature I build. We can require a partial deposit (e.g., $30) or full payment upfront via Stripe or Square. This drastically reduces last-minute cancellations and protects your time.",
+  },
+  {
+    question: "DO I HAVE TO PAY MONTHLY FEES FOR BOOKING SOFTWARE?",
+    answer:
+      "No. Unlike generic apps like Calendly or Vagaro that charge monthly subscriptions, I build a custom booking solution that you own 100%. You avoid those recurring SaaS fees forever.",
+  },
+  {
+    question: "WILL THIS HELP ME RANK ON GOOGLE MAPS?",
+    answer:
+      "Absolutely. I code your site with 'Local SEO' schemas. This tells Google exactly which cities you serve, helping you appear higher when customers search 'Mobile Detailing near me' or 'Cafe in [City]'.",
+  },
+  {
+    question: "HOW LONG DOES IT TAKE TO LAUNCH?",
+    answer:
+      "A high-conversion Detailer Landing Page with booking is usually ready in 5-7 days. Larger sites for Cafes or Detail Shops with e-commerce products typically take about 2 weeks.",
+  },
+  {
+    question: "I ALSO OWN A CAFE. CAN YOU DO DIGITAL MENUS?",
+    answer:
+      "Yes! For my cafe clients, I build fast-loading digital menus linked to QR codes. I can also set up simple online ordering systems for pickup, bypassing expensive delivery app fees.",
+  },
   {
     question: "WHAT DO I NEED TO GET STARTED?",
     answer:
-      "To get started, simply share your project goals, any existing brand assets (logo, fonts), and examples of websites you like. I'll guide you through a simple onboarding process to extract your vision.",
-  },
-  {
-    question: "DO YOU PROVIDE HOSTING & DOMAIN SETUP?",
-    answer:
-      "Yes. I handle the entire technical setup. I will recommend the best hosting providers for your needs (like Vercel, AWS, or Hostinger) and configure your domain so your site is live and secure without you touching a line of code.",
-  },
-  {
-    question: "WILL MY WEBSITE BE MOBILE FRIENDLY?",
-    answer:
-      "Absolutely. Every website I build is 'Mobile-First'. I ensure your site looks and performs perfectly on all devices—from large desktop monitors to tablets and smartphones.",
-  },
-  {
-    question: "WHAT IF I NEED CHANGES AFTER THE PROJECT IS DONE?",
-    answer:
-      "I provide 1-2 week of complimentary support after launch to fix any bugs. For future updates, we can discuss a maintenance retainer or I can teach you how to make simple text/image edits yourself.",
-  },
-  {
-    question: "HOW LONG DOES A TYPICAL PROJECT TAKE?",
-    answer:
-      "A standard 5-page business website typically takes 1-2 weeks from start to finish, depending on how quickly you can provide feedback. E-commerce sites may take 3-4 weeks depending on complexity.",
-  },
-  {
-    question: "DO I OWN THE CODE AND DESIGN?",
-    answer:
-      "Yes! Once the final payment is made, you have 100% ownership of the website, the code, and all design assets. No hidden lock-in fees.",
-  },
-  {
-    question: "WILL THERE BE INVOICES AND AGREEMENT?",
-    answer:
-      "Absolutely. We sign a transparent Service Agreement to lock in the scope and price before starting. You also receive formal invoices for all payments, suitable for your business tax and accounting records.",
+      "Just your service list, pricing, and photos of your work (cars or coffee). I handle the technical heavy lifting—from domain setup to writing the sales copy that converts visitors into bookers.",
   },
 ];
 

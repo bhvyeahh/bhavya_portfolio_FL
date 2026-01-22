@@ -30,7 +30,7 @@ export default function Footer() {
       <div className="relative z-20 w-full px-6 md:px-12 pb-10 flex flex-col md:flex-row justify-between items-end md:items-center gap-8">
         {/* LEFT: Copyright */}
         <div className="font-display font-bold text-white uppercase text-[10px] md:text-xs tracking-widest">
-          ©2025 Framer-Theme
+          ©2026 All rights reserved.
         </div>
 
         {/* CENTER: Minimal Social Links (Horizontal) */}

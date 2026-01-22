@@ -4,33 +4,33 @@ import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
-// --- DATA (Unchanged) ---
+// --- DATA (UPDATED FOR DETAILER NICHE) ---
 const services = [
   {
-    id: "branding",
-    label: "BRANDING",
-    img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1000&auto=format&fit=crop",
+    id: "websites",
+    label: "WEBSITES", // Was BRANDING
+    img: "https://images.unsplash.com/photo-1481480746807-0a2835979333?q=80&w=1000&auto=format&fit=crop", // Mobile/Tech vibe
     position:
       "bottom-10 left-1/2 -translate-x-1/2 md:translate-x-0 md:bottom-auto md:top-10 md:left-[10%]",
   },
   {
-    id: "uiux",
-    label: "UI/UX",
-    img: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop",
+    id: "booking",
+    label: "BOOKING", // Was UI/UX
+    img: "https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=1000&auto=format&fit=crop", // Calendar/Schedule vibe
     position:
       "bottom-10 left-1/2 -translate-x-1/2 md:translate-x-0 md:bottom-auto md:top-20 md:right-[15%]",
   },
   {
-    id: "framer",
-    label: "FRAMER",
-    img: "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop",
+    id: "localseo",
+    label: "LOCAL SEO", // Was FRAMER
+    img: "https://images.unsplash.com/photo-1572021335469-31706a17aaef?q=80&w=1000&auto=format&fit=crop", // Growth/Maps vibe
     position:
       "bottom-10 left-1/2 -translate-x-1/2 md:translate-x-0 md:bottom-32 md:left-[20%]",
   },
   {
-    id: "animation",
-    label: "ANIMATION",
-    img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop",
+    id: "dashboards",
+    label: "DASHBOARD", // Was ANIMATION
+    img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop", // Analytics vibe
     position:
       "bottom-10 left-1/2 -translate-x-1/2 md:translate-x-0 md:bottom-10 md:right-[20%]",
   },
@@ -141,7 +141,7 @@ export default function Services() {
       {/* Top Header */}
       <div className="absolute top-4 md:top-10 w-full px-4 md:px-8 flex justify-between items-center text-gray-500 font-mono text-[10px] md:text-xs uppercase tracking-widest border-b border-white/5 pb-2 md:pb-4 z-20">
         <span>//</span>
-        <span className="text-white font-bold">Services</span>
+        <span className="text-white font-bold">Solutions</span>
         <span>//</span>
       </div>
 
@@ -166,15 +166,20 @@ export default function Services() {
               {service.label}
             </h2>
 
-            {/* Desktop-only sub-labels */}
-            {service.id === "uiux" && (
+            {/* Desktop-only sub-labels (UPDATED CONDITIONS) */}
+            {service.id === "booking" && (
               <div className="hidden md:block absolute -left-32 top-1/2 -translate-y-1/2 text-xs font-mono text-gray-500 text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Web & App Design <br /> UX Research
+                Auto-Sync Calendar <br /> SMS Reminders
               </div>
             )}
-            {service.id === "branding" && (
+            {service.id === "websites" && (
               <div className="hidden md:block absolute -right-24 top-1/2 -translate-y-1/2 text-xs font-mono text-gray-500 text-left opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                Logo Design <br /> Graphic
+                For Detailers <br /> & Cafes
+              </div>
+            )}
+             {service.id === "dashboards" && (
+              <div className="hidden md:block absolute -left-32 top-1/2 -translate-y-1/2 text-xs font-mono text-gray-500 text-right opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                Revenue Tracking <br /> Analytics
               </div>
             )}
           </div>
@@ -200,7 +205,7 @@ export default function Services() {
         ))}
       </div>
 
-      {/* Background Grid Pattern (Optional: Kept it but lowered opacity to blend with image) */}
+      {/* Background Grid Pattern */}
       <div className="bg-grid-pattern absolute inset-0 opacity-10 z-10 pointer-events-none mix-blend-overlay"></div>
     </section>
   );

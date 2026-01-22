@@ -9,38 +9,42 @@ import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- DATA ---
+// --- UPDATED PROJECT DATA (2 CARS, 2 CAFES) ---
 const projects = [
   {
-    id: "beany-barista",
-    title: "BEANY BARISTA",
-    category: "BRANDING / WEB DESIGN",
-    img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1000&auto=format&fit=crop",
-    link: "https://beanybarsita-demo.vercel.app/",
+    id: "jts-detail",
+    title: "JT'S MOBILE DETAIL",
+    category: "AUTO DETAILING / BOOKING",
+    // Car Detailing Image (Dark/Sleek)
+    img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=1000&auto=format&fit=crop",
+    link: "https://jtsdetail.vercel.app",
     size: "large",
   },
   {
-    id: "notezen",
-    title: "NOTEZEN APP",
-    category: "WEB APP / SAAS",
-    img: "https://images.unsplash.com/photo-1517842645767-c639042777db?q=80&w=1000&auto=format&fit=crop",
-    link: "https://notezenn.vercel.app/",
+    id: "scrubz-oc",
+    title: "SCRUBZ OC",
+    category: "MOBILE WASH / LANDING",
+    // Car Wash Image (Foam/Action)
+    img: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    link: "https://scrubzoc.vercel.app",
     size: "small",
   },
   {
     id: "luxury-cafe",
     title: "LUXURY CAFE",
-    category: "E-COMMERCE",
+    category: "CAFE / E-COMMERCE",
+    // Existing Cafe Image
     img: "https://framerusercontent.com/images/E3D1ipROmSUYy4qPfW8Lftxig.jpg?scale-down-to=2048",
     link: "https://luxury-cafe-demo.vercel.app",
     size: "large",
   },
   {
-    id: "barber-shop",
-    title: "BARBER SHOP",
-    category: "LOCAL BUSINESS",
-    img: "https://framerusercontent.com/images/lh61MkFEnG13s0kkVrM6qETSdg.webp?scale-down-to=1024&width=1920&height=1280",
-    link: "https://blssd-barber-shop.vercel.app/",
+    id: "beany-barista",
+    title: "BEANY BARISTA",
+    category: "COFFEE SHOP / BRANDING",
+    // Existing Cafe Image
+    img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1000&auto=format&fit=crop",
+    link: "https://beanybarsita-demo.vercel.app/",
     size: "small",
   },
 ];
@@ -170,9 +174,9 @@ export default function FeaturedWorks() {
       {/* --- Description Centered --- */}
       <div className="w-full flex justify-center mb-24 relative z-20 overflow-hidden">
         <p className="section-desc text-gray-400 text-xs md:text-sm font-mono text-center max-w-md leading-relaxed">
-          A curated selection of projects that reflect our commitment{" "}
+          High-conversion websites for Mobile Detailers and Cafes.
           <br className="hidden md:block" />
-          to simplicity and purposeful design.
+          Designed to turn visitors into bookings.
         </p>
       </div>
 

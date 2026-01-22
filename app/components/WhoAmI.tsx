@@ -9,13 +9,14 @@ import { Globe } from "lucide-react";
 // Register ScrollTrigger (just in case it's not global yet)
 gsap.registerPlugin(ScrollTrigger);
 
+// --- UPDATED SKILLS FOR DETAILER NICHE ---
 const skills = [
-  "FULL STACK",
-  "NEXT.JS 14",
-  "REACT",
-  "NODE.JS",
-  "TAILWIND CSS",
-  "DATABASE DESIGN",
+  "BOOKING ENGINES",
+  "CALENDAR SYNC",
+  "PAYMENT GATEWAYS",
+  "NEXT.JS / REACT",
+  "GOOGLE MAPS SEO",
+  "DASHBOARDS",
 ];
 
 // --- GSAP TypingText Component ---
@@ -176,7 +177,7 @@ export default function WhoAmI() {
           >
             <TypingText text="INDIA," delay={0.1} />
             <br />
-            <TypingText text="BASE" delay={0.4} />
+            <TypingText text="BASED" delay={0.4} />
           </h2>
 
           {/* Skills Pills */}
@@ -277,9 +278,10 @@ export default function WhoAmI() {
               mix-blend-difference
             "
           >
-            <TypingText text="WEB DEV/" delay={0.2} />
+            {/* UPDATED TITLE FOR NICHE */}
+            <TypingText text="NICHE/" delay={0.2} />
             <br />
-            <TypingText text="CONSULTANT" delay={0.5} />
+            <TypingText text="SPECIALIST" delay={0.5} />
           </h2>
         </div>
 
@@ -296,9 +298,10 @@ export default function WhoAmI() {
         >
           {/* Note: Standard text fade in for long paragraph is better than typing effect */}
           <div className="typing-char opacity-0 translate-y-4">
-            I specialize in solving business problems with code. From custom
-            Next.js platforms to high-converting landing pages, I ensure your
-            vision scales seamlessly online.
+            {/* UPDATED DESCRIPTION FOR BUSINESS VALUE */}
+            I build automated booking engines for Mobile Car Detailers & Cafes.
+            My systems fill your calendar, handle payments, and track revenue
+            while you focus on the work.
           </div>
         </div>
       </div>

@@ -124,7 +124,7 @@ export default function Hero() {
           </span>
           <div className="text-[9px] md:text-[10px] text-gray-400 mt-1 flex items-center gap-2 uppercase tracking-wide">
             <span className="w-1.5 h-1.5 bg-brand-green rounded-full animate-pulse shadow-[0_0_8px_#00ff41]"></span>
-            Accepting New Clients
+            Accepting Detailer Clients
           </div>
         </div>
 
@@ -153,10 +153,10 @@ export default function Hero() {
             className="font-display font-black text-[17vw] md:text-[14vw] lg:text-[12vw] leading-[0.8] tracking-tighter uppercase text-white text-center md:text-left"
           >
             <div className="overflow-hidden">
-              <div className="hero-text-line block">Bhavya</div>
+              <div className="hero-text-line block">Fully</div>
             </div>
             <div className="overflow-hidden">
-              <span className="text-zinc-700 hero-text-line block">Dev.</span>
+              <span className="text-zinc-700 hero-text-line block">Booked.</span>
             </div>
           </h1>
         </div>
@@ -167,11 +167,11 @@ export default function Hero() {
             strokeWidth={1}
           />
           <h2 className="font-display text-lg md:text-xl font-bold uppercase leading-tight text-white hero-sub-item">
-            Web Developer at Layoutory,<br /> Helping Brands Build Their Digital Presence
+            Automated Booking Systems for Mobile Car Detailers & Cafes
           </h2>
           <p className="text-xs text-gray-400 max-w-[280px] md:max-w-xs leading-relaxed hero-sub-item">
-            I love creating captivating and functional interfaces that evoke
-            emotions and establish a connection between the brand and the user.
+            Stop chasing clients. I build high-converting websites that automate
+            your calendar, track revenue, and reduce no-shows so you can focus on detailing.
           </p>
         </div>
       </div>
@@ -195,11 +195,11 @@ export default function Hero() {
               />
               <text className="text-[12px] font-bold fill-white uppercase tracking-widest">
                 <textPath href="#curve">
-                  Web Freelancer • Freelancer •
+                  Auto Detailing Specialist • Cafe Design •
                 </textPath>
               </text>
             </svg>
-            <div className="text-2xl md:text-3xl font-bold text-white">F</div>
+            <div className="text-2xl md:text-3xl font-bold text-white">D</div>
           </div>
         </div>
 
@@ -210,10 +210,14 @@ export default function Hero() {
           style={{ transformStyle: "preserve-3d" }}
         >
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-4 transform -skew-y-3 scale-110 opacity-60 hover:opacity-100 transition-opacity duration-500">
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
+            {/* Image 1: Car Detailing Foam */}
+            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+            {/* Image 2: Cafe Interior */}
+            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
+            {/* Image 3: Car Polishing/Detailing */}
+            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1507136566006-cfc505b114fc?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
+            {/* Image 4: Clean Car / Luxury */}
+            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1552930294-6b595f4c2974?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
           </div>
 
           <div className="absolute bottom-0 w-full h-24 md:h-32 bg-gradient-to-t from-brand-dark to-transparent z-10"></div>
@@ -222,15 +226,15 @@ export default function Hero() {
         {/* Status Footer */}
         <div className="absolute bottom-0 w-full flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 md:gap-0 text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 py-4 border-t border-white/5 bg-brand-dark z-20">
           <div className="flex items-center gap-2">
-            Available for Project{" "}
+            Taking New Detailers{" "}
             <span className="w-1.5 h-1.5 bg-brand-green rounded-full"></span>
           </div>
-          <div className="hidden md:block">Result On Time Delivery</div>
-          <div className="hidden md:block">NDA Agreement Ready</div>
+          <div className="hidden md:block">Automated Booking Setup</div>
+          <div className="hidden md:block">Premium Dashboards Included</div>
           <div className="md:hidden flex gap-4">
-            <span>On Time Delivery</span>
+            <span>Auto-Booking</span>
             <span>•</span>
-            <span>NDA Ready</span>
+            <span>Local SEO</span>
           </div>
         </div>
       </div>
