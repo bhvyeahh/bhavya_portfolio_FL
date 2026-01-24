@@ -1,64 +1,43 @@
 import React from 'react';
-import { Globe, ArrowUpRight, Menu } from 'lucide-react';
+import { Globe, ArrowUpRight, Sparkles } from 'lucide-react';
 import Image from 'next/image';
 import Footer from '../components/Footer';
 import Link from 'next/link';
 
-// Demo Data: Added 'link' property to each project
+// Updated Data: Detailer Focused + Bento sizing logic
 const projects = [
   {
     id: 1,
-    title: "BLSSD BARBERSHOP",
-    category: "UI/UX • LANDING PAGE",
-    image: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=2074&auto=format&fit=crop", 
-    description: "A modern, masculine landing page for a premium barbershop featuring appointment scheduling and gallery.",
-    link: "https://blssd-barber-shop.vercel.app/" // <--- REPLACE THIS with your actual link
+    title: "JT's Mobile Detailing",
+    category: "BOOKING SYSTEM • BRANDING",
+    image: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=2000&auto=format&fit=crop", 
+    description: "Complete booking engine overhaul for a high-volume mobile detailer.",
+    link: "https://jtsdetail.vercel.app",
+    size: "large" // Spans full width
   },
   {
     id: 2,
-    title: "Beany Barista",
-    category: "BRANDING • WEB DESIGN",
-    image: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=2047&auto=format&fit=crop",
-    description: "Minimalist coffee shop interface focusing on menu discovery and atmosphere.",
-    link: "https://beanybarsita-demo.vercel.app/" // <--- REPLACE THIS
+    title: "Scrubz OC",
+    category: "LOCAL SEO • LANDING PAGE",
+    image: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description: "High-conversion landing page focused on recurring maintenance plans.",
+    link: "https://scrubzocdetailing.vercel.app",
+    size: "medium" // Spans 1 column
   },
   {
     id: 3,
-    title: "Balt Coffee Co.",
-    category: "ECOMMERCE • SHOPIFY",
-    image: "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2071&auto=format&fit=crop",
-    description: "Dark-themed ecommerce experience for premium coffee bean subscriptions.",
-    link: "https://balt-bakeries.vercel.app/" // <--- REPLACE THIS
+    title: "Defries Detailing",
+    category: "PORTFOLIO • UI/UX",
+    image: "https://images.unsplash.com/photo-1732624697571-e877b2b4f5ba?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description: "Luxury minimalist showcase for ceramic coating and paint correction services.",
+    link: "https://defriesdetailing.vercel.app",
+    size: "medium" // Spans 1 column
   },
-  {
-    id: 4,
-    title: "Cafe Matinal",
-    category: "APP DESIGN • LOYALTY",
-    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=1974&auto=format&fit=crop",
-    description: "Mobile app interface for a busy city cafe chain with order-ahead functionality.",
-    link: "https://luxury-cafe-demo.vercel.app/" // <--- REPLACE THIS
-  },
-  {
-    id: 5,
-    title: "NoteZen App",
-    category: "VISUAL IDENTITY",
-    image: "https://images.pexels.com/photos/315791/pexels-photo-315791.jpeg",
-    description: "Fresh, organic web design for a specialty matcha tea cafe.",
-    link: "https://notezenn.vercel.app/" // <--- REPLACE THIS
-  },
-  {
-    id: 6,
-    title: "The Jelly Donuts",
-    category: "DEVELOPMENT • FRAMER",
-    image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070&auto=format&fit=crop",
-    description: "Experimental design layout for a coffee workshop and training center.",
-    link: "https://jelly-donut.vercel.app/" // <--- REPLACE THIS
-  }
 ];
 
 export default function WorkPage() {
   return (
-    <div className="min-h-screen bg-[#080808] text-white font-sans selection:bg-white selection:text-black">
+    <div className="min-h-screen bg-[#080808] text-white font-sans selection:bg-brand-green selection:text-black">
       {/* Background Grid Pattern Overlay */}
       <div 
         className="fixed inset-0 z-0 opacity-[0.03] pointer-events-none"
@@ -72,110 +51,111 @@ export default function WorkPage() {
       <div className="relative z-10 max-w-[1600px] mx-auto px-4 md:px-8 lg:px-12 pt-8 pb-20">
         
         {/* --- HEADER --- */}
-        <header className="flex justify-between items-start mb-24 text-xs font-medium tracking-widest text-neutral-400 uppercase">
+        <header className="flex justify-between items-center mb-20 text-xs font-medium tracking-widest text-neutral-400 uppercase">
           <div className="flex flex-col gap-1">
-            <span className="text-white font-bold">Bhavya Rathore</span>
-          </div>
-
-          <div className="hidden md:flex gap-8">
-            
+            <span className="text-white font-bold tracking-widest">Layoutory.</span>
           </div>
 
           <div className="flex items-center gap-6">
             <Link href="/" passHref>
-            <button className="border border-neutral-700 rounded-full px-6 py-2 hover:bg-white hover:text-black transition-colors duration-300">
+            <button className="border border-neutral-800 bg-neutral-900/50 backdrop-blur-md rounded-full px-6 py-2 hover:bg-white hover:text-black transition-all duration-300">
               Home
             </button>
             </Link>
-            
           </div>
         </header>
 
-        {/* --- HERO SECTION --- */}
-        <section className="mb-32 grid grid-cols-1 lg:grid-cols-12 gap-8 items-end">
-          {/* Large Text */}
-          <div className="lg:col-span-8">
-            <h1 className="text-[14vw] leading-[0.8] font-bold tracking-tighter uppercase mix-blend-exclusion">
-              WORKS
-              <br />
-    
+        {/* --- HERO SECTION (Compact) --- */}
+        <section className="mb-24 flex flex-col md:flex-row justify-between items-end gap-8 border-b border-neutral-800 pb-12">
+          <div>
+            <h1 className="text-[10vw] md:text-[8vw] leading-[0.8] font-bold tracking-tighter uppercase text-white">
+              Selected <span className="text-neutral-600">Work</span>
             </h1>
           </div>
 
-          {/* Right Side Description */}
-          <div className="lg:col-span-4 flex flex-col justify-end pb-4 space-y-8">
-            <div className="w-16 h-16 animate-spin-slow opacity-80">
-               {/* Wireframe globe representation */}
-               <Globe strokeWidth={1} className="w-full h-full text-white" />
+          <div className="flex flex-col items-start md:items-end gap-4 max-w-sm text-left md:text-right">
+            <div className="flex items-center gap-2 text-brand-green">
+                <Sparkles size={16} />
+                <span className="text-xs font-bold uppercase tracking-widest">Niche Expertise</span>
             </div>
-            
-            <div className="space-y-4">
-              <h3 className="text-sm font-bold uppercase tracking-wide">
-                CRAFTING PROJECTS THAT HAVE<br/> PURPOSE & DESIGN
-              </h3>
-              <p className="text-xs text-neutral-400 leading-relaxed max-w-xs">
-                Each project is designed to not just look good, but to work beautifully — merging thoughtful UX with bold visual storytelling.
-              </p>
-            </div>
+            <p className="text-sm text-neutral-400 leading-relaxed">
+              Specialized digital solutions for the automotive detailing industry. 
+              Focusing on conversion, booking automation, and luxury aesthetics.
+            </p>
           </div>
         </section>
 
-        {/* --- DIVIDER --- */}
-        <div className="flex items-center justify-between py-12 border-t border-neutral-900 mb-12">
-          <span className="text-neutral-600 italic text-xl font-light">//</span>
-          <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-neutral-300">Featured Works</h2>
-          <span className="text-neutral-600 italic text-xl font-light">//</span>
-        </div>
-
-        {/* --- PROJECT GRID --- */}
-        <div className="flex flex-col gap-24">
-          {projects.map((project) => (
-            /* CHANGED: Wrapped in Link instead of div, added 'block' to className to maintain layout */
-            <Link href={project.link} key={project.id} className="group cursor-pointer block">
+        {/* --- BENTO GRID PROJECTS --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          {projects.map((project, index) => (
+            <Link 
+                href={project.link} 
+                key={project.id} 
+                className={`group cursor-pointer relative block ${
+                    project.size === 'large' ? 'md:col-span-2' : 'md:col-span-1'
+                }`}
+            >
               
-              {/* UPDATED IMAGE CONTAINER 
-                  Changed from aspect ratio to fixed viewport height (70vh)
-              */}
-              <div className="relative w-full h-[50vh] md:h-[70vh] overflow-hidden rounded-lg bg-neutral-900 mb-6">
+              {/* Card Container */}
+              <div className="relative overflow-hidden rounded-2xl bg-neutral-900 border border-neutral-800 transition-all duration-500 hover:border-neutral-600">
                 
-                {/* Overlay Gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"/>
-                
-                <Image 
-                  src={project.image} 
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
-                
-                {/* Floating Mockup Title */}
-                <div className="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <span className="text-4xl md:text-6xl font-bold tracking-tighter italic text-white/90 drop-shadow-lg">
-                        View Project
-                    </span>
-                </div>
-              </div>
+                {/* Image Wrapper */}
+                <div className={`relative w-full overflow-hidden ${
+                    project.size === 'large' ? 'aspect-[16/9] md:aspect-[21/9]' : 'aspect-[4/3]'
+                }`}>
+                    {/* Dark Overlay on Hover */}
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-500 z-10" />
+                    
+                    <Image 
+                        src={project.image} 
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                    />
 
-              {/* Project Details Footer */}
-              <div className="flex justify-between items-end border-b border-neutral-900 pb-6 group-hover:border-neutral-700 transition-colors duration-300">
-                <div>
-                  <h3 className="text-3xl md:text-5xl font-bold uppercase tracking-tight mb-2 group-hover:text-neutral-300 transition-colors">
-                    {project.title}
-                  </h3>
-                  <div className="flex gap-4 text-xs font-medium text-neutral-500 uppercase tracking-wider">
-                    <span>{project.category}</span>
-                    <span>•</span>
-                    <span>2025</span>
-                  </div>
+                    {/* Floating Button */}
+                    <div className="absolute top-6 right-6 z-20 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-4 group-hover:translate-y-0">
+                        <div className="w-12 h-12 bg-white text-black rounded-full flex items-center justify-center shadow-lg">
+                            <ArrowUpRight size={20} />
+                        </div>
+                    </div>
                 </div>
 
-                <div className="w-12 h-12 rounded-full border border-neutral-800 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-300">
-                  <ArrowUpRight className="w-5 h-5" />
+                {/* Content info below image (Clean & Minimal) */}
+                <div className="p-6 md:p-8 bg-[#0a0a0a] relative z-20">
+                    <div className="flex justify-between items-start">
+                        <div>
+                            <div className="text-[10px] font-mono text-brand-green uppercase tracking-widest mb-2">
+                                {project.category}
+                            </div>
+                            <h3 className="text-2xl md:text-3xl font-bold text-white uppercase tracking-tight group-hover:text-neutral-300 transition-colors">
+                                {project.title}
+                            </h3>
+                        </div>
+                        <div className="hidden md:block text-neutral-500 font-mono text-xs">
+                            0{index + 1}
+                        </div>
+                    </div>
+                    <p className="mt-4 text-sm text-neutral-400 max-w-md leading-relaxed">
+                        {project.description}
+                    </p>
                 </div>
+
               </div>
             </Link>
           ))}
         </div>
+
+        {/* --- BOTTOM CTA --- */}
+        <div className="mt-32 text-center">
+            <p className="text-neutral-500 text-xs uppercase tracking-widest mb-4">Ready to upgrade?</p>
+            <Link href="https://calendly.com/bhavyarathore575/30min" className="inline-block">
+                <h2 className="text-4xl md:text-6xl font-black text-white hover:text-brand-green transition-colors cursor-pointer tracking-tighter">
+                    BOOK YOUR BUILD
+                </h2>
+            </Link>
+        </div>
+
       </div>
       <Footer />
     </div>

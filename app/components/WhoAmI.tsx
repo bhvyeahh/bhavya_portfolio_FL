@@ -227,9 +227,9 @@ export default function WhoAmI() {
         >
           <div className="relative w-full h-full">
             <img
-              src="/mypfp.jpg"
+              src="/logo.png"
               alt="Founder"
-              className="w-full h-full object-cover object-top opacity-90 grayscale contrast-125"
+              className="w-full h-full object-cover opacity-100 grayscale contrast-225"
             />
 
             {/* Slice bars (The Glitch Overlay) */}

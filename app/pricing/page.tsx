@@ -14,101 +14,90 @@ import {
   Calendar,
   ArrowRight,
   Sparkles,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- DATA: CURRENCIES ---
+// --- DATA: CURRENCIES & RATES ---
 const currencies = {
   USD: { symbol: "$", label: "USD ($)", rate: 1 },
-  EUR: { symbol: "€", label: "EUR (€)", rate: 0.85 },
-  GBP: { symbol: "£", label: "GBP (£)", rate: 0.75 },
-  INR: { symbol: "₹", label: "India (₹)", rate: 25 },
+  EUR: { symbol: "€", label: "EUR (€)", rate: 0.92 },
+  GBP: { symbol: "£", label: "GBP (£)", rate: 0.78 },
+  INR: { symbol: "₹", label: "India (₹)", rate: 84 },
 };
+
+// --- DATA: FEATURES MASTER LIST ---
+// (Ensures strict alignment across all cards - 12 Rows total)
+const featureList = [
+  "Mobile-First Design (Ads Ready)",
+  "Click-to-Call & SMS Buttons",
+  "Services & Pricing Menu",
+  "Google Maps Integration",
+  "Contact Form & Lead Email",
+  "Portfolio/Gallery Section",
+  "Automated Booking System",
+  "Accept Deposits (Stripe/Square)",
+  "Google Reviews Sync",
+  "Advanced Quote Calculator",
+  "SEO 'Detailing near me'",
+  "Admin Revenue Dashboard",
+];
 
 // --- DATA: MAIN PLANS ---
 const plans = [
   {
-    name: "BASIC",
-    prices: { USD: 1000, EUR: 850, GBP: 750, INR: 20000 },
-    desc: "A professional static presence to get your business online.",
-    delivery: "5-7 days",
+    name: "STARTER WASH",
+    basePriceUSD: 299,
+    desc: "Perfect for new detailers. A professional 2-page site to replace your Linktree.",
+    delivery: "3-5 days",
     revisions: "2 Rounds",
-    features: [
-      { text: "Mobile Responsive Design", included: true },
-      { text: "Social Media Integration", included: true },
-      { text: "Google Maps & Business Setup", included: true },
-      { text: "Functional Static Website", included: true },
-      { text: "CMS (Edit text & images yourself)", included: false },
-      { text: "Contact Forms & Lead Database", included: false },
-      { text: "Basic SEO Optimization", included: false },
-      { text: "Premium Animations", included: false },
-      { text: "E-commerce & Online Payments", included: false },
-      { text: "30 Days Priority Support", included: false },
-    ],
+    pages: "2 Pages (Home + Services)",
+    // Indices from featureList to include
+    includedFeatures: [0, 1, 2, 3, 4, 5], 
   },
   {
-    name: "STANDARD",
-    prices: { USD: 1850, EUR: 1575, GBP: 1385, INR: 40000 },
-    desc: "Dynamic site with a CMS for businesses that update content often.",
-    delivery: "10-14 days",
+    name: "PRO DETAILER",
+    basePriceUSD: 699,
+    desc: "The growth engine. Automate bookings, take deposits, and stop no-shows.",
+    delivery: "7-10 days",
     revisions: "3 Rounds",
-    features: [
-      { text: "Mobile Responsive Design", included: true },
-      { text: "Social Media Integration", included: true },
-      { text: "Google Maps & Business Setup", included: true },
-      { text: "Functional Dynamic Website", included: true },
-      { text: "CMS (Edit text & images yourself)", included: true },
-      { text: "Contact Forms & Lead Database", included: true },
-      { text: "Basic SEO Optimization", included: true },
-      { text: "Premium Animations", included: false },
-      { text: "E-commerce & Online Payments", included: false },
-      { text: "30 Days Priority Support", included: false },
-    ],
+    pages: "Up to 6 Pages",
+    includedFeatures: [0, 1, 2, 3, 4, 5, 6, 7, 8],
   },
   {
-    name: "PREMIUM",
-    prices: { USD: 3000, EUR: 2550, GBP: 2250, INR: 70000 },
-    desc: "Full-scale E-commerce solution with payments and advanced logic.",
-    delivery: "3-4 Weeks",
-    revisions: "5 Rounds",
-    features: [
-      { text: "Mobile Responsive Design", included: true },
-      { text: "Social Media Integration", included: true },
-      { text: "Google Maps & Business Setup", included: true },
-      { text: "Functional Dynamic Website", included: true },
-      { text: "CMS (Edit text & images yourself)", included: true },
-      { text: "Contact Forms & Lead Database", included: true },
-      { text: "Basic SEO Optimization", included: true },
-      { text: "Premium Animations", included: true },
-      { text: "E-commerce & Online Payments", included: true },
-      { text: "30 Days Priority Support", included: true },
-    ],
+    name: "EMPIRE",
+    basePriceUSD: 1199,
+    desc: "Dominance package. Custom dashboards, SEO ranking, and full automation.",
+    delivery: "2-3 Weeks",
+    revisions: "Unlimited",
+    pages: "Up to 12 Pages",
+    includedFeatures: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11], // All included
   },
 ];
 
-// --- DATA: ADD-ONS ---
+// --- DATA: ADD-ONS (A La Carte) ---
 const addOns = [
   {
     name: "Extra Page",
-    basePrice: 150,
-    desc: "Per additional page beyond package limit.",
+    basePrice: 100,
+    desc: "Per additional page (About, FAQ, etc).",
   },
   {
     name: "Extra Revision Round",
-    basePrice: 100,
+    basePrice: 50,
     desc: "Per round of design changes.",
   },
   {
     name: "Urgent Delivery",
-    basePrice: 500,
+    basePrice: 300,
     desc: "Jump the queue (48hr turnaround).",
   },
   {
-    name: "Copywriting",
-    basePrice: 200,
-    desc: "Professional text content per page.",
+    name: "Professional Copywriting",
+    basePrice: 150,
+    desc: "We write sales-focused text for you.",
   },
 ];
 
@@ -116,24 +105,21 @@ const addOns = [
 const monthlyServices = [
   {
     name: "Basic Maintenance",
-    basePrice: 50,
+    basePrice: 20,
     icon: <Zap className="text-amber-400" />,
-    features: ["Server Monitoring", "Security Patches", "Monthly Backups"],
+    features: ["Hosting Included", "Security Patches", "Monthly Backups"],
   },
   {
-    name: "Seasonal Theme Support",
+    name: "Growth Partner",
     basePrice: 150,
     icon: <Calendar className="text-amber-400" />,
     features: [
-      "Site changes for Xmas, Halloween, etc.",
-      "Holiday Banners",
-      "Festive Animations",
+      "2 SEO Blog Posts / mo",
+      "Seasonal Banner Updates",
+      "Priority Support",
     ],
   },
 ];
-
-// --- DATA: PREMIUM FREEBIES ---
-const premiumFreebies = ["10% Discount on Future Add-Ons"];
 
 type Particle = {
   left: string;
@@ -153,11 +139,29 @@ export default function Pricing() {
   const cardsRef = useRef<HTMLDivElement>(null);
 
   const isGlobal = currency !== "INR";
-  const DISCOUNT_PERCENTAGE = 0.1;
 
+  // --- PRICING LOGIC ---
+  // Calculates main plan prices (ending in 99 or 00)
+  const calculatePrice = (baseUSD: number) => {
+    if (currency === "USD") return baseUSD;
+
+    const rate = currencies[currency].rate;
+    const rawPrice = baseUSD * rate;
+
+    // If INR: Round to nearest 100 (e.g. 24800)
+    if (currency === "INR") {
+        return Math.ceil(rawPrice / 100) * 100;
+    }
+
+    // For EUR/GBP: Round to nearest 50, then subtract 1 (e.g. 649)
+    return Math.ceil(rawPrice / 50) * 50 - 1;
+  };
+
+  // Calculates Add-on prices (simpler rounding)
   const getAddonPrice = (base: number) => {
     const rate = currencies[currency].rate;
-    return Math.ceil((base * rate) / 10) * 10;
+    if (currency === "INR") return Math.ceil((base * rate) / 100) * 100;
+    return Math.ceil(base * rate);
   };
 
   useEffect(() => {
@@ -174,9 +178,9 @@ export default function Pricing() {
   // --- GSAP ANIMATIONS ---
   useGSAP(
     () => {
-      // Desktop: Staggered Entrance
       const mm = gsap.matchMedia();
       
+      // Desktop: Staggered Entrance
       mm.add("(min-width: 768px)", () => {
         gsap.from(".pricing-card", {
           y: 100,
@@ -188,19 +192,19 @@ export default function Pricing() {
         });
       });
 
-      // Mobile: Side entrance
+      // Mobile: Slide Entrance
       mm.add("(max-width: 767px)", () => {
         gsap.from(".pricing-card", {
-            x: 100,
+            x: 50,
             opacity: 0,
             duration: 0.8,
             stagger: 0.1,
             ease: "power2.out",
-            scrollTrigger: { trigger: ".pricing-grid", start: "top 80%" },
+            scrollTrigger: { trigger: ".pricing-grid", start: "top 85%" },
         });
       });
 
-      // Other animations (keep same)
+      // Add-ons Entrance
       gsap.from(".interactive-card", {
         y: 50,
         opacity: 0,
@@ -210,19 +214,31 @@ export default function Pricing() {
         scrollTrigger: { trigger: ".addons-section", start: "top 85%" },
       });
 
-      gsap.to(".floating-asset", {
-        y: -30,
-        rotation: 8,
-        duration: 4,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        stagger: { each: 0.8, from: "random" },
-      });
+      // Mouse Spotlight Logic
+      const cards = document.querySelectorAll(".pricing-card, .interactive-card");
+      const handleMouseMove = (e: MouseEvent) => {
+        cards.forEach((card) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          (card as HTMLElement).style.setProperty("--mouse-x", `${x}px`);
+          (card as HTMLElement).style.setProperty("--mouse-y", `${y}px`);
+        });
+      };
+
+      if (cardsRef.current) {
+        cardsRef.current.addEventListener("mousemove", handleMouseMove);
+      }
+      return () => {
+        if (cardsRef.current) {
+          cardsRef.current.removeEventListener("mousemove", handleMouseMove);
+        }
+      };
     },
     { scope: containerRef }
   );
 
+  // Price Change Animation (Blur Swap)
   useGSAP(
     () => {
       gsap.fromTo(
@@ -234,6 +250,7 @@ export default function Pricing() {
     { dependencies: [currency], scope: containerRef }
   );
 
+  // Dropdown Toggle Animation
   useGSAP(
     () => {
       if (isOpen) {
@@ -257,43 +274,12 @@ export default function Pricing() {
     { dependencies: [isOpen], scope: containerRef }
   );
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    const cards = document.querySelectorAll(".interactive-card, .pricing-card");
-    cards.forEach((card) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      (card as HTMLElement).style.setProperty("--mouse-x", `${x}px`);
-      (card as HTMLElement).style.setProperty("--mouse-y", `${y}px`);
-    });
-  };
-
   return (
     <section
       ref={containerRef}
-      onMouseMove={handleMouseMove}
-      className="relative w-full bg-[#050505] py-20 md:py-32 px-0 md:px-12 lg:px-20 border-t border-white/5 overflow-hidden font-sans"
+      className="relative w-full bg-[#050505] py-20 md:py-32 border-t border-white/5 overflow-hidden font-sans"
     >
-      {/* --- ASSETS: FLOATING MONEY/COINS --- */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/2529/2529396.png"
-          alt="coin"
-          className="floating-asset absolute top-20 left-10 w-16 opacity-10 blur-[1px]"
-        />
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/536/536054.png"
-          alt="money"
-          className="floating-asset absolute bottom-40 right-10 w-24 opacity-10 blur-[1px]"
-        />
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/9498/9498226.png"
-          alt="diamond"
-          className="floating-asset absolute top-1/2 left-20 w-12 opacity-5"
-        />
-      </div>
-
-      {/* --- CSS via Style Tag (Crash Proof) --- */}
+      {/* 1. Background Particles & Styles */}
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes floatUp {
           0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
@@ -303,10 +289,9 @@ export default function Pricing() {
         .particle {
           position: absolute;
           border-radius: 50%;
-          background: radial-gradient(circle, rgba(251, 191, 36, 0.8) 0%, rgba(0, 0, 0, 0) 70%);
+          background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
           animation: floatUp linear infinite;
         }
-        /* Hide Scrollbar */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}} />
@@ -328,88 +313,45 @@ export default function Pricing() {
         ))}
       </div>
 
-      {/* --- HEADER BANNER --- */}
-      <div className="relative z-20 mb-10 w-full max-w-4xl mx-auto text-center px-6">
-        <div className="inline-block bg-gradient-to-r from-amber-900/40 via-amber-600/20 to-amber-900/40 border border-amber-500/30 rounded-xl p-4 backdrop-blur-md relative overflow-hidden mb-10 shadow-[0_0_30px_rgba(245,158,11,0.1)]">
-          <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
-
-          <p className="text-amber-400 font-mono text-[10px] tracking-[0.3em] uppercase mb-1">
-            2026 KICKOFF OFFER
-          </p>
-          <h2 className="text-2xl md:text-3xl font-bold text-white flex justify-center items-center gap-4">
-            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-            <span className="tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white via-amber-100 to-white">
-              NEW YEAR SPECIAL
-            </span>
-            <Sparkles className="text-amber-400 w-5 h-5 animate-pulse" />
-          </h2>
-          <p className="text-white/60 text-xs mt-2 font-mono">
-            START 2026 STRONG • 10% OFF ALL PACKAGES
-          </p>
-        </div>
-      </div>
-
-      {/* Header Controls */}
-      <div className="px-6 w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
+      {/* Header */}
+      <div className="px-6 md:px-12 lg:px-20 w-full flex flex-col md:flex-row justify-between items-start md:items-center text-gray-500 font-mono text-[9px] md:text-[10px] uppercase tracking-[0.2em] mb-12 md:mb-16 gap-6 md:gap-0 relative z-20">
         <div className="flex items-center gap-3 md:gap-4">
-          <span className="text-amber-500">//</span>
+          <span className="text-brand-green">//</span>
           <span className="text-white font-bold tracking-widest">
-            PRICING & PACKAGES
+            INVESTMENT PLANS
           </span>
-          <span className="text-amber-500">//</span>
-          <Link
-            href="/"
-            className="ml-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-[10px] font-mono text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 uppercase tracking-widest"
-          >
-            Home
-          </Link>
+          <span className="text-brand-green">//</span>
+          {/* --- PASTE THIS CODE HERE --- */}
+    <Link
+      href="/"
+      className="ml-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 text-[10px] font-mono text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-300 uppercase tracking-widest"
+    >
+      Home
+    </Link>
         </div>
 
         <div className="flex flex-col md:flex-row items-center gap-4 relative z-30 w-full md:w-auto">
-          <a
-            href="/pricing"
-            className="hidden md:flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-white/40 hover:text-white transition-colors group"
-          >
-            View Full Page
-            <span className="bg-white/10 p-1 rounded-full text-white/50 group-hover:bg-amber-600 group-hover:text-black transition-all duration-300">
-              <ArrowRight size={10} />
-            </span>
-          </a>
-
           <div className="flex bg-[#111] px-2 py-1.5 rounded-full border border-white/10 shadow-xl items-center gap-2 w-full md:w-auto justify-between md:justify-start">
             <div className="relative w-full md:w-auto">
+              {/* Dropdown Button */}
               <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={`
                     w-full md:w-auto px-5 py-2 rounded-full text-[10px] font-bold uppercase 
                     flex items-center justify-between md:justify-center gap-2 transition-all duration-300
-                    ${
-                      isGlobal
-                        ? "bg-white text-black"
-                        : "text-gray-400 hover:text-white"
-                    }
+                    ${isGlobal ? "bg-white text-black" : "text-gray-400 hover:text-white"}
                 `}
               >
                 {isGlobal ? currencies[currency].label : "Global"}
-                <ChevronDown
-                  size={12}
-                  className={`${
-                    isOpen ? "rotate-180" : ""
-                  } transition-transform duration-300`}
-                />
+                <ChevronDown size={12} className={`${isOpen ? "rotate-180" : ""} transition-transform`} />
               </button>
 
-              <div
-                ref={dropdownRef}
-                className="absolute top-full right-0 mt-2 w-32 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0"
-              >
+              {/* Dropdown Menu */}
+              <div ref={dropdownRef} className="absolute top-full right-0 mt-2 w-32 bg-[#1a1a1a] border border-white/10 rounded-xl overflow-hidden shadow-xl z-50 invisible opacity-0 origin-top">
                 {(["USD", "EUR", "GBP"] as const).map((curr) => (
                   <button
                     key={curr}
-                    onClick={() => {
-                      setCurrency(curr);
-                      setIsOpen(false);
-                    }}
+                    onClick={() => { setCurrency(curr); setIsOpen(false); }}
                     className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:bg-white hover:text-black block"
                   >
                     {curr}
@@ -418,18 +360,12 @@ export default function Pricing() {
               </div>
             </div>
 
+            {/* India Button */}
             <button
-              onClick={() => {
-                setCurrency("INR");
-                setIsOpen(false);
-              }}
+              onClick={() => { setCurrency("INR"); setIsOpen(false); }}
               className={`
                   px-5 py-2 rounded-full text-[10px] font-bold uppercase transition-all duration-300 whitespace-nowrap
-                  ${
-                    currency === "INR"
-                      ? "bg-amber-600 text-black shadow-[0_0_15px_rgba(245,158,11,0.5)]"
-                      : "text-gray-400 hover:text-white"
-                  }
+                  ${currency === "INR" ? "bg-brand-green text-black" : "text-gray-400 hover:text-white"}
               `}
             >
               India (₹)
@@ -438,157 +374,134 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* --- MAIN PRICING GRID (HORIZONTAL SCROLL ON MOBILE) --- */}
+      {/* --- MAIN PRICING GRID --- */}
       <div
         ref={cardsRef}
         className="
             pricing-grid max-w-7xl mx-auto relative group/grid mb-24
-            
-            /* Mobile Scroll Settings */
+            /* Mobile: Horizontal Snap Scroll */
             flex flex-nowrap overflow-x-auto snap-x snap-mandatory gap-4 px-6 pb-12 scrollbar-hide
-            
-            /* Desktop Grid Settings */
-            md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-10 lg:gap-12 md:pb-0 md:px-0
+            /* Desktop: Strict Grid */
+            md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 lg:gap-10 md:pb-0 md:px-12 lg:px-20 md:overflow-visible
+            items-start /* Ensures alignment at top */
         "
       >
         {plans.map((plan) => {
-          const originalPrice =
-            plan.prices[currency as keyof typeof plan.prices];
-          const discountedPrice =
-            Math.ceil((originalPrice * (1 - DISCOUNT_PERCENTAGE)) / 50) * 50;
+          const finalPrice = calculatePrice(plan.basePriceUSD);
 
           return (
             <div
               key={plan.name}
               className="
                 pricing-card 
-                flex flex-col h-full relative z-10 
-                p-6 md:p-8 
-                rounded-3xl border border-white/5 bg-[#0a0a0a] 
+                relative z-10 flex flex-col h-full
+                p-6 md:p-8 rounded-3xl border border-white/5 bg-[#0a0a0a] 
                 overflow-hidden transition-transform duration-500 hover:-translate-y-2
-                
-                /* Mobile Card Width */
                 min-w-[85vw] sm:min-w-[60vw] md:min-w-0 snap-center
               "
             >
+              {/* Highlight Border for Pro/Empire */}
+              {plan.name !== "STARTER WASH" && (
+                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-green/0 via-brand-green/50 to-brand-green/0"></div>
+              )}
+
+              {/* Spotlights */}
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100"
-                style={{
-                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.15), transparent 40%)`,
-                }}
+                style={{ background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.15), transparent 40%)` }}
               />
               <div
                 className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-300 group-hover/grid:opacity-100 z-30"
                 style={{
-                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.4), transparent 40%)`,
-                  maskImage:
-                    "linear-gradient(black, black), linear-gradient(black, black)",
+                  background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255, 158, 11, 0.4), transparent 40%)`,
+                  maskImage: "linear-gradient(black, black), linear-gradient(black, black)",
                   maskClip: "content-box, border-box",
                   maskComposite: "exclude",
                   padding: "1px",
                 }}
               />
 
-              <div className="relative z-20">
+              <div className="relative z-20 h-full flex flex-col">
+                {/* Header */}
                 <div className="flex justify-between items-start mb-6 border-b border-white/5 pb-6">
                   <div>
-                    <h3 className="text-white font-bold text-lg">
-                      {plan.name}
-                    </h3>
-                    <p className="text-[9px] text-amber-500 mt-1 flex items-center gap-1">
-                      ✨ ONE-TIME
-                    </p>
+                    <h3 className="text-white font-bold text-lg">{plan.name}</h3>
+                    <p className="text-[9px] text-gray-500 mt-1 uppercase tracking-wider">One-Time Pay</p>
                   </div>
-                  <span className="bg-amber-600 text-black px-2 py-1 rounded text-[9px] font-bold">
-                    -10%
-                  </span>
+                  {plan.name === "PRO DETAILER" && (
+                    <span className="bg-white text-black px-2 py-1 rounded text-[9px] font-bold">POPULAR</span>
+                  )}
                 </div>
 
-                <div className="mb-6 h-[140px]">
-                  <div className="text-white/40 text-lg font-mono line-through decoration-amber-500/50">
-                    {currencies[currency].symbol}
-                    {originalPrice.toLocaleString()}
-                  </div>
+                {/* Price & Specs */}
+                <div className="mb-6 h-[140px] flex flex-col justify-start">
                   <div className="text-5xl md:text-6xl font-black text-white tracking-tighter price-value">
-                    <span className="text-amber-500 text-3xl align-top mr-1">
-                      {currencies[currency].symbol}
-                    </span>
-                    {discountedPrice.toLocaleString()}
+                    <span className="text-gray-500 text-3xl align-top mr-1">{currencies[currency].symbol}</span>
+                    {finalPrice.toLocaleString()}
                   </div>
-                  <div className="flex gap-2 mt-4 text-[9px] font-mono text-amber-400 uppercase">
-                    <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
-                      {plan.delivery}
-                    </span>
-                    <span className="border border-amber-900/50 px-2 py-1 rounded bg-amber-900/10">
-                      {plan.revisions}
+                  
+                  <div className="flex flex-wrap gap-2 mt-4 text-[9px] font-mono text-gray-400 uppercase">
+                    <span className="border border-white/10 px-2 py-1 rounded bg-white/5">{plan.delivery}</span>
+                    <span className="border border-white/10 px-2 py-1 rounded bg-white/5">{plan.revisions}</span>
+                    <span className="border border-brand-green/20 text-brand-green px-2 py-1 rounded bg-brand-green/5 flex items-center gap-1">
+                        <FileText size={10} /> {plan.pages}
                     </span>
                   </div>
                 </div>
 
-                <ul className="flex flex-col gap-3">
-                  {plan.features.map((f, i) => (
-                    <li
-                      key={i}
-                      className={`text-xs flex gap-3 ${
-                        f.included
-                          ? "text-white"
-                          : "text-white/20 line-through decoration-white/20"
-                      }`}
-                    >
-                      {f.included ? (
-                        <Check size={14} className="text-amber-500" />
-                      ) : (
-                        <X size={14} />
-                      )}{" "}
-                      {f.text}
-                    </li>
-                  ))}
-                </ul>
+                <p className="text-gray-400 text-xs leading-relaxed mb-8 min-h-[40px]">{plan.desc}</p>
 
-                {plan.name === "PREMIUM" && (
-                  <div className="mt-8 bg-gradient-to-b from-amber-900/20 to-transparent border border-amber-600/30 p-4 rounded-xl">
-                    <p className="text-amber-500 text-[10px] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
-                      <Star size={12} fill="currentColor" /> Premium Bonuses
-                    </p>
-                    <ul className="space-y-1">
-                      {premiumFreebies.map((freebie, i) => (
-                        <li
-                          key={i}
-                          className="text-[10px] text-amber-200/80 flex items-center gap-2"
-                        >
-                          <span className="w-1 h-1 rounded-full bg-amber-500"></span>{" "}
-                          {freebie}
+                {/* Features - Unified List for Perfect Alignment */}
+                <ul className="flex flex-col gap-3 mb-8 flex-grow">
+                  {featureList.map((featureText, idx) => {
+                    const isIncluded = plan.includedFeatures.includes(idx);
+                    return (
+                        <li key={idx} className={`text-xs flex items-center gap-3 ${isIncluded ? "text-white" : "text-white/20"}`}>
+                            {isIncluded ? <Check size={14} className="text-brand-green min-w-[14px]" /> : <X size={14} className="min-w-[14px]" />} 
+                            <span className={isIncluded ? "" : "line-through decoration-white/20"}>{featureText}</span>
                         </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                    );
+                  })}
+                </ul>
+                
+                {/* CTA */}
+                <div className="mt-auto pt-6 border-t border-white/5">
+                    <Link href="https://calendly.com/" target="_blank">
+                        <button className={`w-full py-3 rounded-full text-xs font-bold uppercase tracking-widest transition-all duration-300 border ${
+                            plan.name === "PRO DETAILER" 
+                            ? "bg-white text-black hover:bg-gray-200 border-transparent"
+                            : "bg-white/5 text-white hover:bg-white hover:text-black border-white/10"
+                        }`}>
+                            Get Started
+                        </button>
+                    </Link>
+                </div>
               </div>
             </div>
           );
         })}
-        {/* Spacer for mobile to see last card properly */}
+        {/* Mobile Spacer */}
         <div className="min-w-[4vw] md:hidden"></div>
       </div>
 
       {/* --- EXTRA SERVICES SECTION (ADD-ONS) --- */}
-      <div className="addons-section max-w-7xl mx-auto relative z-20 px-6 md:px-0">
+      <div className="addons-section max-w-7xl mx-auto relative z-20 px-6 md:px-12 lg:px-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* LEFT: A LA CARTE EXTRAS */}
           <div>
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Plus className="text-amber-500" /> Additional Services
+              <Plus className="text-brand-green" /> Additional Services
             </h3>
             <div className="flex flex-col gap-4">
               {addOns.map((addon, i) => (
                 <div
                   key={i}
-                  className="interactive-card group relative bg-[#0a0a0a] border border-white/5 p-4 rounded-xl flex justify-between items-center overflow-hidden hover:border-amber-500/30 transition-colors"
+                  className="interactive-card group relative bg-[#0a0a0a] border border-white/5 p-4 rounded-xl flex justify-between items-center overflow-hidden hover:border-brand-green/30 transition-colors"
                 >
                   <div
                     className="pointer-events-none absolute -inset-px rounded-xl opacity-0 transition duration-300 group-hover:opacity-100"
                     style={{
-                      background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(245, 158, 11, 0.1), transparent 40%)`,
+                      background: `radial-gradient(400px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.1), transparent 40%)`,
                     }}
                   />
 
@@ -599,7 +512,7 @@ export default function Pricing() {
                     <p className="text-white/40 text-[10px]">{addon.desc}</p>
                   </div>
                   <div className="text-right relative z-10">
-                    <span className="text-amber-400 font-bold font-mono block price-value">
+                    <span className="text-brand-green font-bold font-mono block price-value">
                       +{currencies[currency].symbol}
                       {getAddonPrice(addon.basePrice).toLocaleString()}
                     </span>
@@ -612,7 +525,7 @@ export default function Pricing() {
           {/* RIGHT: MONTHLY RETAINERS */}
           <div>
             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Calendar className="text-amber-500" /> Monthly Care Plans
+              <Calendar className="text-brand-green" /> Monthly Care Plans
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {monthlyServices.map((service, i) => (
@@ -653,10 +566,10 @@ export default function Pricing() {
               ))}
             </div>
 
-            <div className="mt-6 p-4 bg-amber-900/10 border border-amber-500/20 rounded-xl text-center">
-              <p className="text-amber-200 text-xs">
+            <div className="mt-6 p-4 bg-brand-green/10 border border-brand-green/20 rounded-xl text-center">
+              <p className="text-brand-green text-xs">
                 <span className="font-bold">✨ Pro Tip:</span> Buy the{" "}
-                <span className="text-white font-bold">PREMIUM</span> package
+                <span className="text-white font-bold">EMPIRE</span> package
                 and get 1 month of Maintenance for FREE!
               </p>
             </div>

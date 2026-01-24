@@ -5,6 +5,7 @@ import Hero from "./components/Hero";
 import Pricing from "./components/Pricing";
 import PricingBanner from "./components/PricingBanner";
 import FeaturedWorks from "./components/ProjectCard";
+import QuoteCalculator from "./components/QuoteCalculator";
 import ServiceList from "./components/ServiceList";
 import Services from "./components/Services";
 import Testimonials from "./components/Testimonials";
@@ -20,6 +21,7 @@ export default function Home() {
       {/* <ServiceList /> */}
       <Testimonials />
       <Pricing  />
+      <QuoteCalculator />
       <PricingBanner  />
       <FAQ />
       <ContactCTA />
