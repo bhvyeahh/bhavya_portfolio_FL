@@ -14,11 +14,11 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://layoutory.in"), 
 
   title: "Bhavya Rathore | Layoutory",
-  description: "Helping detailers grow with high-converting websites.",
+  description: "Helping Business grow with high-converting websites.",
   
   openGraph: {
     title: "Bhavya Rathore | Layoutory",
-    description: "Helping detailers grow with high-converting websites.",
+    description: "Helping Business grow with high-converting websites.",
     siteName: "Layoutory",
     images: [
       {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Bhavya Rathore | Layoutory",
-    description: "Helping detailers grow with high-converting websites.",
+    description: "Helping Business grow with high-converting websites.",
     images: ["/logo.png"],
   },
 };
