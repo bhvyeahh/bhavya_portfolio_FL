@@ -1,13 +1,9 @@
-import Contact from "./components/Contact";
 import ContactCTA from "./components/ContactCTA";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
-import Portfolio from "./components/Portfolio";
 import Pricing from "./components/Pricing";
 import PricingBanner from "./components/PricingBanner";
-import Problem from "./components/Problem";
-import Process from "./components/Process";
 import FeaturedWorks from "./components/ProjectCard";
 import QuoteCalculator from "./components/QuoteCalculator";
 import ServiceList from "./components/ServiceList";
@@ -19,21 +15,17 @@ export default function Home() {
   return (
     <main className="w-full min-h-screen bg-brand-dark selection:bg-brand-green selection:text-black">
       <Hero />
-      <Problem />
       <Services />
-      <Portfolio />
-      <Process />
-      <Pricing  />
-      <Contact />
-      <Footer />
-      {/* <WhoAmI /> */}
-      {/* <FeaturedWorks /> */}
+      <WhoAmI />
+      <FeaturedWorks />
       {/* <ServiceList /> */}
-      {/* <Testimonials /> */}
+      <Testimonials />
+      <Pricing  />
       {/* <QuoteCalculator /> */}
-      {/* <PricingBanner  /> */}
-      {/* <FAQ /> */}
-      {/* <ContactCTA /> */}
+      <PricingBanner  />
+      <FAQ />
+      <ContactCTA />
+      <Footer />
       {/* Call to Action Footer */}
       {/* <footer className="h-[50vh] flex flex-col items-center justify-center border-t border-white/10 text-center px-4">
        

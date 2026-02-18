@@ -1,104 +1,50 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
 :root {
-  /* --- THEME VARIABLES --- */
-  /* Changed to a warm, "Architect's Notebook" Beige */
-  --color-paper: #F0EFE9; 
-  
-  --color-ink: #1a1a1a;   
-  --color-marker-yellow: #fff500;
-  --color-marker-blue: #0044ff;
-  --color-marker-pink: #ff00dd;
-  --color-alert-red: #ff3b30;
-  
-  /* Fonts */
-  --font-headline: "Space Grotesk", sans-serif; /* Keep for Big Titles */
-  --font-body: "Outfit", sans-serif;             /* NEW: Premium font for simple text */
-  --font-hand: "Permanent Marker", cursive;      /* Scribbles */
+  background-color: #050505;
+  color: #ededed;
 }
 
-/* --- BASE STYLES --- */
 body {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
-  
-  /* CHANGED: Use the new "Outfit" font for general text */
-  font-family: var(--font-body); 
-  
+  /* The subtle architectural grid */
+  background-size: 50px 50px;
+  background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
+                    linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
   overflow-x: hidden;
-  
-  /* TEXTURE: (KEPT EXACTLY AS IS)
-     1. Dot Grid (Subtle gray dots)
-     2. Noise Filter (Grainy paper look) 
-  */
-  background-image: 
-    radial-gradient(#a3a3a3 1px, transparent 1px),
-    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
-  
-  background-size: 30px 30px, auto; /* Dots every 30px, Noise auto */
-  background-attachment: fixed; /* Texture stays while scrolling */
 }
 
-/* Typography Defaults */
-h1, h2, h3, h4, h5, h6 {
-  /* Ensure Headings still use Space Grotesk */
-  font-family: var(--font-headline);
-  font-weight: 800;
-  line-height: 0.9;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+/* Hide scrollbar for cleaner look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+.mask-gradient-b {
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+/* 3D Utilities for ServiceList.tsx */
+.transform-style-3d {
+  transform-style: preserve-3d;
 }
 
-/* --- UTILITIES --- */
-
-/* Text Outline for Stickers */
-.text-outline-white {
-  color: white;
-  text-shadow: 
-    3px 3px 0px rgba(0,0,0,0.1), /* Soft drop shadow */
-    -1px -1px 0 #000,  
-    1px -1px 0 #000,
-    -1px 1px 0 #000,
-    1px 1px 0 #000;
+.backface-hidden {
+  backface-visibility: hidden;
 }
 
-/* Marker Fonts */
-.font-hand {
-  font-family: var(--font-hand);
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  line-height: 1.2;
+/* Custom rotate utility if Tailwind's rotate-x-90 doesn't pick up immediately */
+.-rotate-x-90 {
+  transform: rotateX(-90deg);
 }
 
-/* Headline Font Utility */
-.font-headline {
-  font-family: var(--font-headline);
-}
-
-/* Body Font Utility */
-.font-sans {
-  font-family: var(--font-body);
-}
-
-/* Messy Borders */
-.border-messy {
-  border: 2px solid var(--color-ink);
-  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-}
-
-/* Highlighters */
-.highlight-yellow {
-  background: var(--color-marker-yellow);
-  color: black; 
-  border: 2px solid transparent; 
-}
-
-/* Animation Utilities */
-.animate-spin-slow {
-  animation: spin 8s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.perspective-1000 {
+  perspective: 1000px;
 }
