@@ -1,252 +1,151 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ArrowUpRight, Globe, Calendar } from "lucide-react";
+import { ArrowUpRight, Play, Globe, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 
-export default function Hero() {
+export default function GlassHero() {
   const containerRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const badgeRef = useRef<HTMLDivElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
-
-  // FIX: Handle Time State to prevent Hydration Error
-  const [time, setTime] = useState("");
-
+  
+  // Optimized Mouse Light Source Logic (Desktop Only)
   useEffect(() => {
-    setTime(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
-    const interval = setInterval(() => {
-      setTime(new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}));
-    }, 60000);
-    return () => clearInterval(interval);
+    const isDesktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    if (!isDesktop) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      
+      requestAnimationFrame(() => {
+        const cards = document.querySelectorAll(".glass-surface");
+        cards.forEach((card) => {
+          const rect = (card as HTMLElement).getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          (card as HTMLElement).style.setProperty("--mouse-x", `${x}px`);
+          (card as HTMLElement).style.setProperty("--mouse-y", `${y}px`);
+        });
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+  useGSAP(() => {
+    const mm = gsap.matchMedia();
+    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
-      // 1. Initial Setups
-      gsap.set(".hero-nav-item", { y: -20, opacity: 0 });
-      gsap.set(".hero-text-line", { y: 150, rotate: 5, opacity: 0 });
-      gsap.set(".hero-sub-item", { y: 20, opacity: 0 });
-      gsap.set(gridRef.current, { rotateX: 40, opacity: 0, y: 100, scale: 0.9 });
-      gsap.set(badgeRef.current, { scale: 0, rotate: -180 });
+    tl.fromTo(".hero-text", 
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, stagger: 0.1 }
+    );
 
-      // 2. The Sequence
-      tl.to(".hero-nav-item", {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power4.out",
-      })
-        .to(
-          ".hero-text-line",
-          {
-            y: 0,
-            rotate: 0,
-            opacity: 1,
-            duration: 1.5,
-            stagger: 0.15,
-            ease: "power4.out",
-          },
-          "-=0.8"
-        )
-        .to(
-          ".hero-sub-item",
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.8,
-            stagger: 0.1,
-          },
-          "-=1"
-        )
-        .to(
-          gridRef.current,
-          {
-            rotateX: 0,
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 1.8,
-            ease: "expo.out",
-          },
-          "-=1"
-        )
-        .to(
-          badgeRef.current,
-          {
-            scale: 1,
-            rotate: 0,
-            duration: 1.2,
-            ease: "elastic.out(1, 0.5)",
-          },
-          "-=1.2"
-        );
+    tl.fromTo(".glass-visual",
+      { scale: 0.8, opacity: 0, filter: "blur(10px)" },
+      { scale: 1, opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "slow(0.7, 0.7, false)" },
+      "-=0.8"
+    );
 
-      // 3. Interactive Mouse Parallax
-      const handleMouseMove = (e: MouseEvent) => {
-        if (!gridRef.current) return;
-        const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 20;
-        const yPos = (clientY / window.innerHeight - 0.5) * 20;
+    mm.add("(min-width: 768px)", () => {
+       gsap.to(".floating-glass", {
+         y: -20,
+         rotateZ: 5,
+         duration: 6,
+         repeat: -1,
+         yoyo: true,
+         ease: "sine.inOut"
+       });
+    });
 
-        gsap.to(gridRef.current, {
-          rotationY: xPos,
-          rotationX: -yPos,
-          ease: "power2.out",
-          duration: 1,
-        });
-      };
-
-      window.addEventListener("mousemove", handleMouseMove);
-
-      return () => {
-        window.removeEventListener("mousemove", handleMouseMove);
-      };
-    },
-    { scope: containerRef }
-  );
+  }, { scope: containerRef });
 
   return (
-    <section
+    <section 
       ref={containerRef}
-      className="relative min-h-screen flex flex-col pt-6 md:pt-8 px-4 md:px-8 overflow-hidden bg-brand-dark pb-20 md:pb-32 perspective-1000"
+      className="relative min-h-screen w-full flex flex-col justify-center overflow-hidden bg-[#030303] text-white selection:bg-purple-500/30 perspective-[1000px] pb-12 md:pb-0"
     >
-      {/* Navbar */}
-      <nav className="flex justify-between items-center md:items-start mb-12 md:mb-16 z-50">
-        <div className="flex flex-col hero-nav-item">
-          <span className="font-display font-bold text-xl md:text-2xl tracking-tighter text-white">
-            Layoutory.
-          </span>
-          <div className="text-[9px] md:text-[10px] text-gray-400 mt-1 flex items-center gap-2 uppercase tracking-wide">
-            <span className="w-1.5 h-1.5 bg-brand-green rounded-full animate-pulse shadow-[0_0_8px_#00ff41]"></span>
-            Accepting Detailer Clients
-          </div>
-        </div>
-
-        {/* TIME FIX APPLIED HERE */}
-        <div className="hidden md:block text-xs font-mono text-gray-500 text-right hero-nav-item">
-          LOCAL TIME <br /> {time}
-        </div>
-
-        <Link href="mailto:bhavyarathore575@gmail.com" className="hero-nav-item">
-          <button className="group border border-white/20 px-4 md:px-6 py-2 rounded-full text-[10px] md:text-xs text-white hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-2">
-            <span className="hidden sm:inline">bhavyarathore575@gmail.com</span>
-            <span className="sm:hidden">Email Me</span>
-            <ArrowUpRight
-              size={14}
-              className="group-hover:rotate-45 transition-transform"
-            />
-          </button>
-        </Link>
-      </nav>
-
-      {/* Main Hero Text */}
-      <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 mt-4">
-        <div className="md:col-span-8 relative z-20 overflow-hidden">
-          <h1
-            ref={titleRef}
-            className="font-display font-black text-[17vw] md:text-[14vw] lg:text-[12vw] leading-[0.8] tracking-tighter uppercase text-white text-center md:text-left"
-          >
-            <div className="overflow-hidden">
-              <div className="hero-text-line block">Fully</div>
-            </div>
-            <div className="overflow-hidden">
-              <span className="text-zinc-700 hero-text-line block">Booked.</span>
-            </div>
-          </h1>
-        </div>
-
-        <div className="md:col-span-4 flex flex-col justify-center items-center md:items-start space-y-4 md:space-y-6 mt-10 md:mt-24 z-20 text-center md:text-left">
-          <Globe
-            className="w-6 h-6 md:w-8 md:h-8 text-white/80 hero-sub-item"
-            strokeWidth={1}
-          />
-          <h2 className="font-display text-lg md:text-xl font-bold uppercase leading-tight text-white hero-sub-item">
-            Automated Booking Systems for Mobile Car Detailers & Cafes
-          </h2>
-          <p className="text-xs text-gray-400 max-w-[280px] md:max-w-xs leading-relaxed hero-sub-item">
-            Stop chasing clients. I build high-converting websites that automate
-            your calendar, track revenue, and reduce no-shows so you can focus on detailing.
-          </p>
-          
-          {/* --- NEW HERO CTA --- */}
-          <Link href="https://calendly.com/bhavyarathore575/30min" target="_blank" className="hero-sub-item mt-2">
-            <button className="relative px-8 py-3 bg-white text-black font-bold uppercase text-xs tracking-widest rounded-full overflow-hidden group hover:scale-105 transition-transform duration-300 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                <span className="relative z-10 flex items-center gap-2">
-                    Book Strategy Call <Calendar size={14} />
-                </span>
-                <div className="absolute inset-0 bg-brand-green transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
-            </button>
-          </Link>
-
-        </div>
+      {/* --- BACKGROUND LAYER --- */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop')" }}
+        ></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-black via-[#050505] to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] bg-purple-900/20 rounded-full blur-[80px] md:blur-[120px]"></div>
       </div>
 
-      {/* --- THE SKEWED WORK SHOWCASE --- */}
-      <div className="relative w-full mt-20 md:mt-24 perspective-1000">
-        {/* The Badge */}
-        <div className="absolute left-1/2 -top-14 md:-top-24 -translate-x-1/2 z-30">
-          <div
-            ref={badgeRef}
-            className="w-28 h-28 md:w-40 md:h-40 rounded-full bg-[#111] border border-white/20 flex items-center justify-center relative shadow-2xl"
-          >
-            <svg
-              viewBox="0 0 100 100"
-              className="w-full h-full absolute animate-spin-slow p-2"
-            >
-              <path
-                id="curve"
-                d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                fill="transparent"
-              />
-              <text className="text-[12px] font-bold fill-white uppercase tracking-widest">
-                <textPath href="#curve">
-                  Auto Detailing Specialist • Cafe Design •
-                </textPath>
-              </text>
-            </svg>
-            <div className="text-2xl md:text-3xl font-bold text-white">D</div>
+      {/* --- NAVBAR --- */}
+      <nav className="absolute top-0 left-0 w-full z-50 px-4 py-4 md:px-12 md:py-6">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <div className="glass-surface relative px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/5 bg-white/[0.03] backdrop-blur-md overflow-hidden group">
+             <span className="relative z-10 font-sans font-bold text-sm md:text-lg tracking-tight">Layoutory.</span>
+          </div>
+          <Link href="mailto:bhavyarathore575@gmail.com">
+            <button className="glass-surface relative px-4 py-2 md:px-6 md:py-3 rounded-full bg-white text-black font-semibold text-[10px] md:text-xs uppercase tracking-widest overflow-hidden transition-transform">
+               <span className="relative z-10">Contact</span>
+            </button>
+          </Link>
+        </div>
+      </nav>
+
+      {/* --- HERO CONTENT --- */}
+      <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center px-4 md:px-12 mt-20 md:mt-16">
+        <div className="flex flex-col items-start order-2 lg:order-1">
+          <div className="hero-text inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-4 md:mb-8">
+             <span className="relative flex h-2 w-2">
+               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+             </span>
+             <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/70">Available for Projects</span>
+          </div>
+
+          <h1 ref={titleRef} className="font-sans font-medium text-[11vw] md:text-[10vw] lg:text-[6.5vw] leading-[0.9] tracking-tight mb-4 md:mb-6">
+            <div className="overflow-hidden"><span className="hero-text block text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/50">BUILDING</span></div>
+            <div className="overflow-hidden"><span className="hero-text block font-serif italic text-white/80">EMPIRES.</span></div>
+          </h1>
+
+          <p className="hero-text text-sm md:text-lg text-white/40 max-w-md leading-relaxed mb-8 md:mb-10">
+            We transform outdated contractor portfolios into automated acquisition systems. Secure high-ticket bids while you sleep.
+          </p>
+
+          <div className="hero-text flex flex-col w-full sm:w-auto sm:flex-row gap-3 md:gap-4">
+             <Link href="https://calendly.com/bhavyarathore575/30min" target="_blank" className="w-full sm:w-auto">
+               <button className="glass-surface group relative w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 bg-white/5 border border-white/10 rounded-xl md:rounded-2xl overflow-hidden transition-all duration-300 active:scale-95">
+                  <span className="relative z-10 flex items-center justify-center gap-3 text-xs md:text-sm font-bold text-white">
+                    Deploy System <ArrowUpRight size={16} />
+                  </span>
+               </button>
+             </Link>
           </div>
         </div>
 
-        {/* The Slanted Image Grid */}
-        <div
-          ref={gridRef}
-          className="w-full h-[35vh] md:h-[60vh] overflow-hidden rounded-t-3xl border-t border-white/10 relative"
-          style={{ transformStyle: "preserve-3d" }}
-        >
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 p-2 md:p-4 transform -skew-y-3 scale-110 opacity-60 hover:opacity-100 transition-opacity duration-500">
-            {/* Image 1: Car Detailing Foam */}
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
-            {/* Image 2: Cafe Interior */}
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
-            {/* Image 3: Car Polishing/Detailing */}
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1507136566006-cfc505b114fc?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center"></div>
-            {/* Image 4: Clean Car / Luxury */}
-            <div className="h-40 md:h-64 bg-zinc-800 rounded-lg bg-[url('https://images.unsplash.com/photo-1552930294-6b595f4c2974?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center mt-8 md:mt-12"></div>
-          </div>
-
-          <div className="absolute bottom-0 w-full h-24 md:h-32 bg-gradient-to-t from-brand-dark to-transparent z-10"></div>
-        </div>
-
-        {/* Status Footer */}
-        <div className="absolute bottom-0 w-full flex flex-col md:flex-row justify-center md:justify-between items-center gap-2 md:gap-0 text-[9px] md:text-[10px] uppercase tracking-widest text-gray-500 py-4 border-t border-white/5 bg-brand-dark z-20">
-          <div className="flex items-center gap-2">
-            Taking New Detailers{" "}
-            <span className="w-1.5 h-1.5 bg-brand-green rounded-full"></span>
-          </div>
-          <div className="hidden md:block">Automated Booking Setup</div>
-          <div className="hidden md:block">Premium Dashboards Included</div>
-          <div className="md:hidden flex gap-4">
-            <span>Auto-Booking</span>
-            <span>•</span>
-            <span>Local SEO</span>
-          </div>
+        {/* RIGHT COLUMN: The "Liquid Glass" Artifact */}
+        <div className="relative h-[40vh] md:h-[50vh] lg:h-[80vh] w-full flex items-center justify-center glass-visual perspective-1000 order-1 lg:order-2 mb-8 lg:mb-0">
+           <div className="floating-glass relative w-[70vw] md:w-full max-w-xs md:max-w-md aspect-square">
+              <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 rounded-full blur-[60px] md:blur-[80px]"></div>
+              <div className="glass-surface absolute inset-0 rounded-[2rem] md:rounded-[3rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-2xl shadow-2xl overflow-hidden">
+                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay grayscale transition-all duration-700"></div>
+                 <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8">
+                    <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
+                       <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                          {/* FIXED responsive icon sizing here */}
+                          <CheckCircle2 className="text-green-400 w-4 h-4 md:w-5 md:h-5" />
+                       </div>
+                       <div>
+                          <p className="text-[10px] md:text-xs text-white/50 uppercase tracking-widest">Revenue Tracked</p>
+                          <p className="text-lg md:text-xl font-bold text-white">$124,000+</p>
+                       </div>
+                    </div>
+                    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                       <div className="h-full w-[80%] bg-gradient-to-r from-purple-400 to-blue-400"></div>
+                    </div>
+                 </div>
+              </div>
+           </div>
         </div>
       </div>
     </section>

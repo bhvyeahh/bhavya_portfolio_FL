@@ -1,306 +1,152 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useLayoutEffect } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Globe, LayoutTemplate } from "lucide-react";
+import { MoveRight, Zap, Target, BarChart2, MousePointer2 } from "lucide-react";
 
-// Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
-// --- AGENCY LEVEL SKILLS ---
-const skills = [
-  "AUTOMATED BOOKINGS",
-  "CONVERSION SYSTEMS",
-  "LOCAL SEO DOMINANCE",
-  "CRM INTEGRATIONS",
-  "SPEED OPTIMIZATION",
-  "REVENUE TRACKING",
+const features = [
+  {
+    icon: MousePointer2,
+    title: "Conversion Engineering",
+    desc: "Every pixel is placed to drive user action. We don't just design; we direct traffic."
+  },
+  {
+    icon: Zap,
+    title: "Latency Elimination",
+    desc: "Sub-100ms load times. We strip away the bloat to ensure instant interaction."
+  },
+  {
+    icon: Target,
+    title: "Precision SEO",
+    desc: "Local dominance architecture. We structure data so Google prefers your business."
+  },
+  {
+    icon: BarChart2,
+    title: "Revenue Feedback",
+    desc: "Built-in analytics loops. See exactly which leads turn into paying high-ticket clients."
+  }
 ];
 
-// --- GSAP TypingText Component ---
-const TypingText = ({
-  text,
-  className,
-  delay = 0,
-}: {
-  text: string;
-  className?: string;
-  delay?: number;
-}) => {
-  return (
-    <span className={`inline-block overflow-hidden ${className}`}>
-      {text.split("").map((letter, index) => (
-        <span
-          key={index}
-          className="typing-char inline-block translate-y-full opacity-0 will-change-transform"
-          data-delay={delay}
-        >
-          {letter === " " ? "\u00A0" : letter}
-        </span>
-      ))}
-    </span>
-  );
-};
+export default function AboutSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
-export default function WhoAmI() {
-  const containerRef = useRef<HTMLElement>(null);
+  useGSAP(() => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 70%",
+        toggleActions: "play none none reverse",
+      }
+    });
 
-  useGSAP(
-    () => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 60%",
-          toggleActions: "play none none reverse",
-        },
-      });
+    // 1. Reveal Background Lines
+    tl.fromTo(".grid-line", 
+      { scaleX: 0, transformOrigin: "left" }, 
+      { scaleX: 1, duration: 1.5, stagger: 0.1, ease: "expo.out" }
+    );
 
-      // 1. Image "Cyber Scan" Reveal
-      tl.from(".slice-bar", {
-        scaleY: 0,
-        transformOrigin: "top",
-        duration: 0.8,
-        stagger: {
-          amount: 0.5,
-          from: "random",
-        },
-        ease: "power2.inOut",
-      });
+    // 2. Title Slide Up
+    tl.fromTo(".about-title-char",
+      { y: 100, opacity: 0 },
+      { y: 0, opacity: 1, duration: 1, stagger: 0.03, ease: "power4.out" },
+      "-=1.2"
+    );
 
-      // 2. Text Reveal
-      tl.to(
-        ".typing-char",
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          stagger: 0.02,
-          ease: "back.out(1.7)",
-        },
-        "-=0.4"
-      );
+    // 3. Feature Cards Cascade
+    tl.fromTo(".feature-card",
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power2.out" },
+      "-=0.5"
+    );
 
-      // 3. Skills Pills Cascade
-      tl.from(
-        ".skill-pill",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.5,
-          stagger: 0.05,
-          ease: "power2.out",
-        },
-        "-=0.5"
-      );
-
-      // 4. Icon Spin In
-      tl.from(
-        ".brand-icon",
-        {
-          scale: 0,
-          rotation: -180,
-          opacity: 0,
-          duration: 1,
-          ease: "elastic.out(1, 0.75)",
-        },
-        "-=0.8"
-      );
-
-      // 5. Parallax Effect
-      const handleMouseMove = (e: MouseEvent) => {
-        const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 15;
-        const yPos = (clientY / window.innerHeight - 0.5) * 15;
-
-        gsap.to(".parallax-target", {
-          x: xPos,
-          y: yPos,
-          duration: 1,
-          ease: "power2.out",
-        });
-
-        gsap.to(".slice-bar", {
-          x: -xPos * 0.5,
-          duration: 1,
-          ease: "power2.out",
-        });
-      };
-
-      window.addEventListener("mousemove", handleMouseMove);
-      return () => window.removeEventListener("mousemove", handleMouseMove);
-    },
-    { scope: containerRef }
-  );
+  }, { scope: sectionRef });
 
   return (
-    <section
-      ref={containerRef}
-      className="
-        relative w-full 
-        min-h-screen 
-        bg-[#050505] 
-        pt-12 pb-8 
-        px-6 md:px-12 lg:px-20
-        overflow-hidden 
-        flex flex-col justify-between 
-        border-t border-white/5
-      "
+    <section 
+      ref={sectionRef}
+      className="relative w-full min-h-screen bg-[#F0F2F5] text-[#111] py-24 px-6 md:px-12 lg:px-24 overflow-hidden"
     >
-      {/* --- TOP MARKERS --- */}
-      <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-8 relative z-50">
-        <span>//</span>
-        <span className="text-white font-bold tracking-widest">ABOUT LAYOUTORY</span>
-        <span>//</span>
+      {/* --- BACKGROUND GRID (Blueprint Style) --- */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {/* Horizontal Lines */}
+        <div className="grid-line absolute top-[20%] left-0 w-full h-[1px] bg-black/5"></div>
+        <div className="grid-line absolute top-[50%] left-0 w-full h-[1px] bg-black/5"></div>
+        <div className="grid-line absolute top-[80%] left-0 w-full h-[1px] bg-black/5"></div>
+        {/* Vertical Lines */}
+        <div className="absolute left-[10%] top-0 h-full w-[1px] bg-black/5 hidden md:block"></div>
+        <div className="absolute right-[10%] top-0 h-full w-[1px] bg-black/5 hidden md:block"></div>
       </div>
 
-      {/* --- MAIN CONTENT WRAPPER --- */}
-      <div className="relative flex-grow w-full h-full flex flex-col lg:block">
+      <div className="max-w-[1400px] mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
         
-        {/* LEFT TEXT BLOCK */}
-        <div className="relative z-30 pt-2 md:pt-10 pointer-events-none parallax-target">
-          
-          {/* Main Typography - "SYSTEM ARCHITECT" */}
-          <h2
-            className="
-              font-display font-black 
-              text-[13vw] md:text-[12vw] 
-              leading-[0.8] 
-              uppercase text-white tracking-tighter
-            "
-          >
-            <TypingText text="," delay={0.1} />
-            <br />
-            <TypingText text="" delay={0.4} />
-          </h2>
+        {/* --- LEFT: MANIFESTO (Sticky) --- */}
+        <div className="lg:col-span-5 flex flex-col justify-start">
+           <div className="inline-flex items-center gap-2 mb-8 opacity-60">
+              <div className="w-2 h-2 bg-black rounded-full"></div>
+              <span className="text-[10px] font-mono uppercase tracking-[0.2em]">The Layoutory Standard</span>
+           </div>
 
-          {/* Skills Pills */}
-          <div
-            className="
-              mt-8 md:mt-12 
-              flex flex-wrap gap-2 md:gap-3 
-              max-w-full md:max-w-lg 
-              pointer-events-auto pr-4 md:pr-0
-            "
-          >
-            {skills.map((skill, index) => (
-              <span
-                key={skill}
-                className="
-                  skill-pill
-                  px-3 py-1.5 md:px-5 md:py-2 
-                  rounded-full border border-white/30 
-                  text-[9px] md:text-[11px] 
-                  font-bold font-mono uppercase text-white 
-                  bg-black/50 backdrop-blur-sm 
-                  hover:bg-white hover:text-black 
-                  transition-all duration-300 cursor-pointer hover:scale-105
-                "
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
+           <h2 className="text-6xl md:text-8xl font-sans font-medium tracking-tighter leading-[0.9] mb-10 overflow-hidden">
+             {/* Splitting text for animation */}
+             {"SYSTEMS".split("").map((char, i) => (
+               <span key={i} className="about-title-char inline-block">{char}</span>
+             ))}
+             <br/>
+             {"OVER".split("").map((char, i) => (
+               <span key={i} className="about-title-char inline-block text-gray-400 font-serif italic pr-2">{char}</span>
+             ))}
+             <br/>
+             {"SITES".split("").map((char, i) => (
+               <span key={i} className="about-title-char inline-block">{char}</span>
+             ))}
+           </h2>
 
-          {/* Agency Icon */}
-          <div className="brand-icon mt-8 md:mt-10 pointer-events-auto inline-block">
-            <LayoutTemplate
-              className="w-8 h-8 md:w-12 md:h-12 text-brand-green animate-pulse"
-              strokeWidth={1}
-            />
-          </div>
+           <p className="text-sm md:text-base text-gray-600 leading-relaxed max-w-md feature-card">
+             We don't build "brochure" websites. We engineer high-performance acquisition machines. 
+             If it doesn't capture leads, automate bookings, or track revenue, it doesn't leave our lab.
+           </p>
+
+           <div className="mt-12 feature-card">
+              <button className="group flex items-center gap-4 text-xs font-bold uppercase tracking-widest border-b border-black pb-1 hover:text-blue-600 hover:border-blue-600 transition-all">
+                 Our Methodology <MoveRight size={16} className="group-hover:translate-x-2 transition-transform" />
+              </button>
+           </div>
         </div>
 
-        {/* PORTRAIT IMAGE RESPONSIVE FIX */}
-        <div
-          className="
-            absolute 
-            top-[22%] md:top-[15%] lg:top-[-5%] 
-            right-[-20%] md:right-[0%] 
-            w-[130%] md:w-[80%] lg:w-[65%] 
-            h-[50%] md:h-[80%] lg:h-[110%] 
-            z-10 pointer-events-none 
-            mix-blend-screen 
-            opacity-40 md:opacity-100
-          "
-        >
-          <div className="relative w-full h-full">
-            <img
-              src="/logo.png"
-              alt="Founder"
-              className="w-full h-full object-cover opacity-100 grayscale contrast-225"
-            />
+        {/* --- RIGHT: GRID OF SPECS (Features) --- */}
+        <div className="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-px bg-black/5 border border-black/5 rounded-3xl overflow-hidden shadow-sm">
+           
+           {features.map((feature, idx) => (
+             <div 
+               key={idx} 
+               className="feature-card bg-[#F0F2F5] p-10 flex flex-col gap-6 hover:bg-white transition-colors duration-500 group relative"
+             >
+                <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-gray-400">0{idx + 1}</div>
+                
+                <div className="w-12 h-12 rounded-xl bg-gray-200 group-hover:bg-blue-600 text-black group-hover:text-white transition-all duration-300 flex items-center justify-center">
+                   <feature.icon size={20} strokeWidth={1.5} />
+                </div>
+                
+                <div>
+                   <h3 className="text-xl font-medium mb-3 tracking-tight">{feature.title}</h3>
+                   <p className="text-xs text-gray-500 leading-relaxed pr-4">
+                     {feature.desc}
+                   </p>
+                </div>
+             </div>
+           ))}
 
-            {/* Slice bars (The Glitch Overlay) */}
-            <div className="absolute inset-0 w-full h-full flex justify-between">
-              {[...Array(12)].map((_, i) => (
-                <div
-                  key={i}
-                  className="slice-bar h-full bg-[#050505]"
-                  style={{
-                    width: i % 2 === 0 ? "4%" : "2%",
-                    opacity: i % 2 === 0 ? 0.7 : 0.3,
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Gradients to blend into background */}
-            <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent"></div>
-            <div className="absolute top-0 right-0 w-1/4 h-full bg-gradient-to-l from-[#050505] to-transparent"></div>
-          </div>
         </div>
+
       </div>
 
-      {/* --- BOTTOM AGENCY STATEMENT --- */}
-      <div
-        className="
-          relative z-40 mt-auto pt-10 
-          flex flex-col md:flex-row 
-          items-start md:items-end 
-          justify-between 
-          gap-6 pointer-events-none
-        "
-      >
-        <div className="parallax-target">
-          <h2
-            className="
-              font-display font-black 
-              text-[11vw] md:text-[10vw] 
-              leading-[0.8] 
-              uppercase text-white tracking-tighter 
-              mix-blend-difference
-            "
-          >
-            <TypingText text="AGENCY /" delay={0.2} />
-            <br />
-            <TypingText text="STANDARD" delay={0.5} />
-          </h2>
-        </div>
-
-        <div
-          className="
-            max-w-[280px] md:max-w-sm 
-            text-right md:text-right 
-            text-[10px] md:text-xs 
-            text-gray-400 leading-relaxed 
-            font-mono uppercase tracking-wide 
-            mix-blend-difference self-end
-            parallax-target
-          "
-        >
-          {/* Note: Standard text fade in for long paragraph is better than typing effect */}
-          <div className="typing-char opacity-0 translate-y-4">
-            Layoutory isn't just about code. We engineer high-performance 
-            digital ecosystems. From automated booking engines to seamless 
-            payment flows, we build the infrastructure that scales your business.
-          </div>
-        </div>
-      </div>
-
-      {/* GRID BG */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px] z-0 pointer-events-none"></div>
+      {/* --- BOTTOM DECOR --- */}
+      
     </section>
   );
 }
