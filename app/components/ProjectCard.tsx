@@ -9,8 +9,17 @@ import Link from "next/link";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- UPDATED PROJECT DATA (2 CARS, 2 CAFES) ---
+// --- UPDATED PROJECT DATA (PIVOTAL BUILDERS & JT'S DETAIL) ---
 const projects = [
+  {
+    id: "pivotal-builders",
+    title: "PIVOTAL BUILDERS",
+    category: "CONSTRUCTION / CORPORATE",
+    // Placeholder image for Pivotal Builders (Architecture/Construction)
+    img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2071&auto=format&fit=crop",
+    link: "https://pivotalbuildersinc.com", // Replace with actual URL if different
+    size: "large", // Major project on top/left
+  },
   {
     id: "jts-detail",
     title: "JT'S MOBILE DETAIL",
@@ -18,35 +27,8 @@ const projects = [
     // Car Detailing Image (Dark/Sleek)
     img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=1000&auto=format&fit=crop",
     link: "https://jtsdetail.vercel.app",
-    size: "large",
-  },
-  {
-    id: "scrubz-oc",
-    title: "SCRUBZ OC",
-    category: "MOBILE WASH / LANDING",
-    // Car Wash Image (Foam/Action)
-    img: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "https://scrubzoc.vercel.app",
-    size: "small",
-  },
-  {
-    id: "luxury-cafe",
-    title: "LUXURY CAFE",
-    category: "CAFE / E-COMMERCE",
-    // Existing Cafe Image
-    img: "https://framerusercontent.com/images/E3D1ipROmSUYy4qPfW8Lftxig.jpg?scale-down-to=2048",
-    link: "https://luxury-cafe-demo.vercel.app",
-    size: "large",
-  },
-  {
-    id: "beany-barista",
-    title: "BEANY BARISTA",
-    category: "COFFEE SHOP / BRANDING",
-    // Existing Cafe Image
-    img: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=1000&auto=format&fit=crop",
-    link: "https://beanybarsita-demo.vercel.app/",
-    size: "small",
-  },
+    size: "small", // Accompanying project on the right
+  }
 ];
 
 export default function FeaturedWorks() {
@@ -174,9 +156,9 @@ export default function FeaturedWorks() {
       {/* --- Description Centered --- */}
       <div className="w-full flex justify-center mb-24 relative z-20 overflow-hidden">
         <p className="section-desc text-gray-400 text-xs md:text-sm font-mono text-center max-w-md leading-relaxed">
-          High-conversion websites for Mobile Detailers and Cafes.
+          High-conversion websites for Mobile Detailers and Construction.
           <br className="hidden md:block" />
-          Designed to turn visitors into bookings.
+          Designed to turn visitors into clients.
         </p>
       </div>
 
