@@ -17,7 +17,7 @@ const projects = [
     category: "CONSTRUCTION / CORPORATE",
     // Placeholder image for Pivotal Builders (Architecture/Construction)
     img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2071&auto=format&fit=crop",
-    link: "https://pivotalbuildersinc.com", // Replace with actual URL if different
+    link: "/pivotal-builders-case-study", // Replace with actual URL if different
     size: "large", // Major project on top/left
   },
   {

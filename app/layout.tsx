@@ -47,9 +47,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${syne.variable} ${inter.variable} bg-brand-dark text-white antialiased`}>
-        {/* <SmoothScroll > */}
+        <SmoothScroll >
           {children}
-        {/* </SmoothScroll> */}
+        </SmoothScroll>
       </body>
     </html>
   );

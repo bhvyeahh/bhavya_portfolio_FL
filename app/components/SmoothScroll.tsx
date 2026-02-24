@@ -7,15 +7,14 @@ export default function SmoothScroll({ children }: { children: React.ReactNode }
     <ReactLenis 
       root 
       options={{ 
-        lerp: 0.07, 
-        duration: 1.8, 
-        touchMultiplier: 1.5,
-        wheelMultiplier: 1.1,
-        infinite: false,
+        lerp: 0.08, // Slightly higher than 0.07 prevents that "laggy" feeling
+        wheelMultiplier: 1, // Keep this at 1 to prevent weird mousewheel acceleration
         smoothWheel: true,
+        infinite: false,
+        syncTouch: true, // Add this to make mobile scrolling feel native and sync with GSAP
       }}
     >
-      {/* Cast to any to fix React 18/19 Type Mismatch */}
+      {/* If you are on React 19, you might still need 'as any', but for React 18 this is cleaner */}
       {children as any}
     </ReactLenis>
   );
