@@ -15,7 +15,6 @@ const featureList = [
   "Mobile-First & Speed Optimized",
   "Lead Qualification Form", // Replaced Booking
   "Click-to-Call & SMS Buttons",
-  "Google Maps & Local SEO Setup",
   "Project Gallery Showcase", // Crucial for contractors
   "Trust Signals & Badges", // Trust is key for high ticket
   "Testimonial/Review Section",
@@ -23,6 +22,7 @@ const featureList = [
   "Contact Form to Email",
   "Admin Revenue Dashboard",
   "CRM Integration Ready",
+  "Google Maps & Local SEO Setup",
   "Priority Support",
 ];
 
@@ -30,30 +30,30 @@ const featureList = [
 const plans = [
   {
     name: "ESSENTIAL BUILD",
-    price: 899,
+    price: 1099,
     desc: "Perfect for independent contractors. A professional digital presence to build trust and capture leads.",
     delivery: "5-7 days",
     revisions: "2 Rounds",
     pages: "Up to 3 Pages",
     // 0-based indices from featureList
-    includedFeatures: [0, 1, 2, 3, 4, 5, 6, 7, 8], 
+    includedFeatures: [0, 1, 2, 3, 4, 5, 6, 7], 
     highlight: false,
     icon: Shield
   },
   {
     name: "GROWTH ",
-    price: 1199,
+    price: 1299,
     desc: "The standard for growing firms. Enhanced portfolio showcases and SEO structure to dominate local search.",
     delivery: "10-14 days",
     revisions: "Unlimited",
     pages: "Up to 6 Pages",
-    includedFeatures: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    includedFeatures: [0, 1, 2, 3, 4, 5, 6, 7],
     highlight: true, // Popular
     icon: Zap
   },
   {
     name: "EMPIRE SCALE",
-    price: 1499,
+    price: 1899,
     desc: "Complete digital dominance. Full-scale site with advanced integrations and priority handling.",
     delivery: "2-3 Weeks",
     revisions: "Unlimited",
