@@ -1,233 +1,407 @@
+
 "use client";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowUpRight } from "lucide-react";
+import { useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { Manrope, Instrument_Serif } from "next/font/google";
 
-gsap.registerPlugin(ScrollTrigger);
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+});
 
-// --- UPDATED PROJECT DATA (PIVOTAL BUILDERS & JT'S DETAIL) ---
+const serif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
 const projects = [
   {
-    id: "pivotal-builders",
-    title: "PIVOTAL BUILDERS",
-    category: "CONSTRUCTION / CORPORATE",
-    // Placeholder image for Pivotal Builders (Architecture/Construction)
-    img: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=2071&auto=format&fit=crop",
-    link: "/pivotal-builders-case-study", // Replace with actual URL if different
-    size: "large", // Major project on top/left
+    number: "01",
+    name: "Pivotal Builders",
+    category: "Construction & Remodeling",
+    services: ["Web Design", "Development", "Lead Intake"],
+    description:
+      "A considered digital presence built around trust, clarity, and a more structured project inquiry experience.",
+    href: "/pivotal-builders-case-study",
+    external: false,
   },
   {
-    id: "jts-detail",
-    title: "JT'S MOBILE DETAIL",
-    category: "AUTO DETAILING / BOOKING",
-    // Car Detailing Image (Dark/Sleek)
-    img: "https://images.unsplash.com/photo-1601362840469-51e4d8d58785?q=80&w=1000&auto=format&fit=crop",
-    link: "https://jtsdetail.vercel.app",
-    size: "small", // Accompanying project on the right
-  }
+    number: "02",
+    name: "Slick Construction",
+    category: "Construction Services",
+    services: ["Web Design", "Development", "Booking Experience"],
+    description:
+      "A service-focused website experience that brings detailing packages, customer information, and booking closer together.",
+    href: "https://scsfinc.com",
+    external: true,
+  },
 ];
 
-export default function FeaturedWorks() {
-  const containerRef = useRef<HTMLElement>(null);
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    () => {
-      // 1. Text Reveal Animation (Split effect)
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-          toggleActions: "play none none reverse",
-        },
-      });
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
 
-      tl.from(".section-header-item", {
-        y: 50,
-        opacity: 0,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power4.out",
-      }).from(
-        ".section-desc",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 1,
-          ease: "power2.out",
-        },
-        "-=0.5"
-      );
+    if (
+      window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches
+    ) {
+      return;
+    }
 
-      // 2. Parallax Image Scroll Effect
-      // We grab all project cards and give them different speeds based on their size/column
-      const cards = gsap.utils.toArray(".project-card");
-      cards.forEach((card: any, i) => {
-        // "Large" cards move slower, "Small" cards move faster to create disjointed depth
-        const speed = i % 2 === 0 ? 50 : 150;
+    let animation: Animation | undefined;
 
-        gsap.to(card, {
-          y: -speed, // Move up as we scroll down
-          ease: "none",
-          scrollTrigger: {
-            trigger: card,
-            start: "top bottom", // Start when card hits bottom of screen
-            end: "bottom top", // End when card leaves top of screen
-            scrub: true, // Tie animation strictly to scrollbar
-          },
-        });
-      });
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
 
-      // 3. Magnetic Image Distortion on Hover
-      // This listener tilts the images when you hover over them
-      const handleMouseMove = (e: MouseEvent) => {
-        const target = e.currentTarget as HTMLElement;
-        const img = target.querySelector(".project-img") as HTMLElement;
-        const { left, top, width, height } = target.getBoundingClientRect();
-        const x = (e.clientX - left - width / 2) / 20;
-        const y = (e.clientY - top - height / 2) / 20;
+        animation = element.animate(
+          [
+            {
+              opacity: 0,
+              transform: "translateY(28px)",
+            },
+            {
+              opacity: 1,
+              transform: "translateY(0)",
+            },
+          ],
+          {
+            duration: 850,
+            delay,
+            easing: "cubic-bezier(.22,1,.36,1)",
+            fill: "backwards",
+          }
+        );
 
-        gsap.to(img, {
-          scale: 1.1, // Zoom in slightly
-          x: x,
-          y: y,
-          rotationY: x, // Tilt X
-          rotationX: -y, // Tilt Y
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      };
+        observer.unobserve(element);
+      },
+      { threshold: 0.12 }
+    );
 
-      const handleMouseLeave = (e: MouseEvent) => {
-        const target = e.currentTarget as HTMLElement;
-        const img = target.querySelector(".project-img") as HTMLElement;
+    observer.observe(element);
 
-        gsap.to(img, {
-          scale: 1,
-          x: 0,
-          y: 0,
-          rotationY: 0,
-          rotationX: 0,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-      };
+    return () => {
+      observer.disconnect();
+      animation?.cancel();
+    };
+  }, [delay]);
 
-      // Attach listeners
-      const projectWrappers = document.querySelectorAll(".project-wrapper");
-      projectWrappers.forEach((wrapper) => {
-        wrapper.addEventListener("mousemove", handleMouseMove as any);
-        wrapper.addEventListener("mouseleave", handleMouseLeave as any);
-      });
+  return <div ref={ref} className={className}>{children}</div>;
+}
 
-      return () => {
-        projectWrappers.forEach((wrapper) => {
-          wrapper.removeEventListener("mousemove", handleMouseMove as any);
-          wrapper.removeEventListener("mouseleave", handleMouseLeave as any);
-        });
-      };
-    },
-    { scope: containerRef }
+function ProjectLink({
+  href,
+  external,
+  children,
+  className = "",
+}: {
+  href: string;
+  external: boolean;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <Link
+      href={href}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      className={className}
+    >
+      {children}
+    </Link>
   );
+}
 
+export default function FeaturedWorks() {
   return (
     <section
-      ref={containerRef}
-      className="relative w-full bg-[#050505] py-32 px-4 md:px-12 border-t border-white/5 overflow-hidden"
+      id="selected-work"
+      aria-labelledby="work-heading"
+      className={`${manrope.className} relative w-full overflow-hidden bg-[#F1F0EA] text-[#171717] selection:bg-[#D6FF70] selection:text-black`}
     >
-      {/* --- Section Header --- */}
-      <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-24 relative z-20">
-        <span className="section-header-item">//</span>
-        <h2 className="section-header-item text-white font-bold tracking-widest text-lg md:text-xl">
-          FEATURED WORKS
-        </h2>
-        <Link href="/work" passHref>
-          <button className="section-header-item flex items-center gap-2 border border-white/10 rounded-full px-6 py-2 hover:bg-white hover:text-black transition-colors duration-300">
-            See All Works
-            <ArrowUpRight size={12} className="inline-block ml-2" />
-          </button>
-        </Link>
-        <span className="section-header-item">//</span>
+      <div className="mx-auto max-w-[1800px] px-6 pb-24 pt-24 md:px-12 md:pb-36 md:pt-32 xl:px-20 xl:pb-44 xl:pt-40">
+
+        {/* SECTION INDEX */}
+        <Reveal>
+          <div className="flex items-center justify-between border-t border-black/25 pt-5">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.17em]">
+              02 / Selected work
+            </span>
+
+            <span className="text-[10px] uppercase tracking-[0.14em] text-black/45">
+              A selection of projects
+            </span>
+          </div>
+        </Reveal>
+
+        {/* SECTION HEADING */}
+        <div className="grid grid-cols-1 gap-10 pb-24 pt-20 lg:grid-cols-12 lg:gap-8 lg:pb-32">
+          <div className="lg:col-span-9">
+            <Reveal>
+              <h2
+                id="work-heading"
+                className="text-[clamp(4rem,10.5vw,11rem)] font-semibold leading-[0.88] tracking-[-0.095em]"
+              >
+                Work that
+                <br />
+                <span
+                  className={`${serif.className} font-normal italic tracking-[-0.065em]`}
+                >
+                  speaks.
+                </span>
+              </h2>
+            </Reveal>
+          </div>
+
+          <div className="flex flex-col justify-end lg:col-span-3">
+            <Reveal delay={120}>
+              <p className="max-w-[300px] text-[14px] leading-[1.85] tracking-[-0.015em] text-black/55 md:text-[15px]">
+                Not just something to look at.
+                Digital experiences shaped around
+                real businesses, their customers,
+                and the way they work.
+              </p>
+            </Reveal>
+          </div>
+        </div>
+
+        {/* PROJECT 01 */}
+        <article className="mb-32 md:mb-44">
+          <Reveal>
+            <ProjectLink
+              href={projects[0].href}
+              external={projects[0].external}
+              className="group relative block overflow-hidden bg-[#C7C6C0] outline-offset-4"
+            >
+              <div className="relative aspect-[5/4] overflow-hidden md:aspect-[16/10] xl:aspect-[16/9]">
+                <Image
+                  src="/mockup-pivotal.jpeg"
+                  alt="Pivotal Builders website project preview"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 90vw"
+                  className="object-cover transition-transform duration-[1100ms] ease-[cubic-bezier(.22,1,.36,1)] motion-safe:group-hover:scale-[1.035]"
+                />
+
+                {/* EDITORIAL TOP LABEL */}
+                <div className="absolute left-5 top-5 z-10 flex items-center gap-2 bg-[#F1F0EA] px-4 py-3 text-[10px] font-semibold uppercase tracking-[0.12em] md:left-8 md:top-8">
+                  <span className="h-[6px] w-[6px] bg-[#202020]" />
+                  Featured case study
+                </div>
+
+                {/* CORNER ACTION */}
+                <div className="absolute bottom-5 right-5 z-10 flex h-12 w-12 items-center justify-center bg-[#D6FF70] text-black transition-transform duration-500 motion-safe:group-hover:-translate-y-1 md:bottom-8 md:right-8 md:h-16 md:w-16">
+                  <ArrowUpRight
+                    size={25}
+                    strokeWidth={1.5}
+                  />
+                </div>
+              </div>
+            </ProjectLink>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <ProjectInformation project={projects[0]} />
+          </Reveal>
+        </article>
+
+        {/* TRANSITION STATEMENT */}
+        <Reveal>
+          <div className="mb-28 grid grid-cols-1 gap-8 border-t border-black/20 pt-7 md:mb-40 md:grid-cols-12">
+            <div className="md:col-span-4">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.16em]">
+                Beyond aesthetics
+              </span>
+            </div>
+
+            <div className="md:col-span-8">
+              <p className="max-w-[850px] text-[clamp(1.7rem,3.6vw,3.8rem)] font-medium leading-[1.17] tracking-[-0.065em]">
+                Good design gets attention.
+                <span className="text-black/35">
+                  {" "}Thoughtful digital experiences
+                  make that attention count.
+                </span>
+              </p>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* PROJECT 02 */}
+        <article className="mb-24 md:mb-32">
+          <Reveal>
+            <ProjectLink
+              href={projects[1].href}
+              external={projects[1].external}
+              className="group relative block overflow-hidden bg-[#202020] text-white outline-offset-4"
+            >
+              <div className="relative flex min-h-[440px] flex-col justify-between overflow-hidden px-7 py-8 md:min-h-[650px] md:px-14 md:py-14 lg:min-h-[760px] lg:px-20 lg:py-16">
+
+                {/* TOP BAR */}
+                <div className="relative z-10 flex items-start justify-between gap-4 border-b border-white/20 pb-6">
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em]">
+                    Slick Construction
+                  </span>
+
+                  <span className="text-[10px] uppercase tracking-[0.12em] text-white/45">
+                    Digital experience
+                  </span>
+                </div>
+
+                {/* TYPOGRAPHIC ARTWORK */}
+                <div className="relative z-10 flex flex-1 flex-col items-center justify-center py-12">
+                  <span className="mb-5 text-[10px] font-medium uppercase tracking-[0.5em] text-[#D6FF70] md:mb-9">
+                    The details matter
+                  </span>
+
+                  <div className="w-full text-center">
+                    <span className="block text-[clamp(5rem,19vw,20rem)] font-extrabold leading-[0.77] tracking-[-0.13em]">
+                      Slick
+                    </span>
+
+                    <span
+                      className={`${serif.className} mt-3 block text-[clamp(3.5rem,12vw,12rem)] font-normal italic leading-[0.92] tracking-[-0.07em] text-[#D6FF70] md:mt-5`}
+                    >
+                      Construction.
+                    </span>
+                  </div>
+                </div>
+
+                {/* BOTTOM BAR */}
+                <div className="relative z-10 flex items-end justify-between gap-5 border-t border-white/20 pt-6">
+                  <span className="max-w-[200px] text-[10px] uppercase leading-[1.8] tracking-[0.14em] text-white/50">
+                    Service-led web experience
+                  </span>
+
+                  <span className="flex items-center gap-3 text-[11px] font-semibold">
+                    Visit website
+                    <ArrowUpRight
+                      size={19}
+                      className="text-[#D6FF70] transition-transform duration-300 motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1"
+                    />
+                  </span>
+                </div>
+
+                {/* BACKGROUND DETAIL */}
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(circle at 50% 50%, rgba(255,255,255,.035), transparent 60%)",
+                  }}
+                />
+              </div>
+            </ProjectLink>
+          </Reveal>
+
+          <Reveal delay={100}>
+            <ProjectInformation project={projects[1]} />
+          </Reveal>
+        </article>
+
+        {/* EXPLORE ALL */}
+        <Reveal>
+          <div className="border-t border-black/25">
+            <Link
+              href="/work"
+              className="group flex items-center justify-between gap-8 py-10 transition-colors hover:text-black/60 md:py-14"
+            >
+              <div>
+                <span className="mb-4 block text-[10px] font-semibold uppercase tracking-[0.16em] text-black/45">
+                  More from the studio
+                </span>
+
+                <span className="block text-[clamp(2.4rem,5.5vw,6rem)] font-medium leading-none tracking-[-0.075em]">
+                  Explore all work
+                </span>
+              </div>
+
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center border border-black/25 transition-all duration-300 group-hover:border-black group-hover:bg-black group-hover:text-white md:h-20 md:w-20">
+                <ArrowRight
+                  size={26}
+                  strokeWidth={1.3}
+                  className="transition-transform duration-300 motion-safe:group-hover:translate-x-1"
+                />
+              </div>
+            </Link>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+// SHARED PROJECT INFORMATION
+
+type Project = (typeof projects)[number];
+
+function ProjectInformation({
+  project,
+}: {
+  project: Project;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-8 border-b border-black/20 pb-10 pt-8 md:grid-cols-12 md:gap-6 md:pb-14 md:pt-10">
+
+      <div className="flex items-start gap-5 md:col-span-7">
+        <span className="mt-2 text-[11px] font-medium text-black/45">
+          / {project.number}
+        </span>
+
+        <div>
+          <ProjectLink
+            href={project.href}
+            external={project.external}
+            className="group inline-flex items-start gap-4"
+          >
+            <h3 className="text-[clamp(2rem,4vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.075em]">
+              {project.name}
+            </h3>
+
+            <ArrowUpRight
+              size={20}
+              className="mt-1 shrink-0 transition-transform duration-300 motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1"
+            />
+          </ProjectLink>
+
+          <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.13em] text-black/45">
+            {project.category}
+          </p>
+        </div>
       </div>
 
-      {/* --- Description Centered --- */}
-      <div className="w-full flex justify-center mb-24 relative z-20 overflow-hidden">
-        <p className="section-desc text-gray-400 text-xs md:text-sm font-mono text-center max-w-md leading-relaxed">
-          High-conversion websites for Mobile Detailers and Construction.
-          <br className="hidden md:block" />
-          Designed to turn visitors into clients.
+      <div className="md:col-span-3">
+        <p className="max-w-[320px] text-[13px] leading-[1.85] text-black/60">
+          {project.description}
         </p>
       </div>
 
-      {/* --- Projects Grid Layout --- */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative z-20 pb-20">
-        {projects.map((project, index) => (
-          <div
-            key={project.id}
-            className={`project-card group relative flex flex-col gap-6 ${
-              project.size === "large" ? "lg:col-span-8" : "lg:col-span-4"
-            } translate-y-[100px]`} // Initial translation for parallax to chew on
+      <div className="flex flex-wrap content-start gap-x-4 gap-y-2 md:col-span-2 md:flex-col md:items-end">
+        {project.services.map((service) => (
+          <span
+            key={service}
+            className="text-[10px] font-medium uppercase tracking-[0.08em] text-black/55"
           >
-            {/* Image Card Container */}
-            <a
-              href={project.link}
-              target="_blank"
-              className="project-wrapper block overflow-hidden rounded-[2rem] relative perspective-1000"
-              style={{ transformStyle: "preserve-3d" }}
-            >
-              <div
-                className={`w-full bg-[#111] overflow-hidden relative ${
-                  project.size === "large"
-                    ? "aspect-[16/10]"
-                    : "aspect-[4/5] lg:aspect-square"
-                }`}
-              >
-                {/* The Image Itself */}
-                <img
-                  src={project.img}
-                  alt={project.title}
-                  className="project-img w-full h-full object-cover scale-100 will-change-transform"
-                />
-
-                {/* Overlay (Flash effect on hover) */}
-                <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-100 pointer-events-none mix-blend-overlay"></div>
-              </div>
-            </a>
-
-            {/* Project Info (Below Image) */}
-            <div className="flex justify-between items-end px-2">
-              <div>
-                <h3 className="font-display font-black text-3xl md:text-4xl uppercase text-white tracking-tighter mb-2 translate-y-0 group-hover:-translate-y-2 transition-transform duration-500 ease-out">
-                  {project.title}
-                </h3>
-                <div className="flex gap-2">
-                  <span className="bg-[#1a1a1a] text-gray-400 border border-white/10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest group-hover:bg-white group-hover:text-black transition-colors duration-300">
-                    {project.category}
-                  </span>
-                </div>
-              </div>
-
-              {/* Arrow Button */}
-              <a
-                href={project.link}
-                target="_blank"
-                className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-300 group-hover:scale-110"
-              >
-                <ArrowUpRight
-                  size={20}
-                  className="group-hover:rotate-45 transition-transform duration-300"
-                />
-              </a>
-            </div>
-          </div>
+            {service}
+          </span>
         ))}
       </div>
-
-      {/* Background Grid Pattern */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px] z-0 pointer-events-none"></div>
-    </section>
+    </div>
   );
 }

@@ -15,6 +15,8 @@ import FeaturedWorks from "./components/ProjectCard";
 import Services from "./components/Services";
 import Testimonials from "./components/Testimonials";
 import WhoAmI from "./components/WhoAmI";
+import Capabilities from "./components/Capabilities";
+import AutomationFlow from "./components/AutomationFlow";
 
 export default function Home() {
   const mainRef = useRef<HTMLElement>(null);
@@ -60,13 +62,12 @@ export default function Home() {
       {/* ----------------------------- */}
 
       <Hero />
-      <Services />
-      <WhoAmI />
       <FeaturedWorks />
-      {/* <ServiceList /> */}
+      <Capabilities />
+      <AutomationFlow />
+      <WhoAmI />
       <Testimonials />
       <Pricing  />
-      <PricingBanner  />
       <FAQ />
       <ContactCTA />
       <Footer />

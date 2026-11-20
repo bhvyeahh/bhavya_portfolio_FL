@@ -1,151 +1,322 @@
+
 "use client";
 
-import { useRef, useEffect } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { ArrowUpRight, Play, Globe, CheckCircle2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Manrope, Instrument_Serif } from "next/font/google";
+import { ArrowUpRight, ArrowDown, Menu, X } from "lucide-react";
 
-export default function GlassHero() {
-  const containerRef = useRef<HTMLElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  
-  // Optimized Mouse Light Source Logic (Desktop Only)
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const BOOKING_URL = "https://calendly.com/bhavyarathore575/30min";
+
+export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
-    const isDesktop = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
-    if (!isDesktop) return;
+    const root = sectionRef.current;
+    if (!root) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return;
-      
-      requestAnimationFrame(() => {
-        const cards = document.querySelectorAll(".glass-surface");
-        cards.forEach((card) => {
-          const rect = (card as HTMLElement).getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          (card as HTMLElement).style.setProperty("--mouse-x", `${x}px`);
-          (card as HTMLElement).style.setProperty("--mouse-y", `${y}px`);
-        });
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  useGSAP(() => {
-    const mm = gsap.matchMedia();
-    const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-    tl.fromTo(".hero-text", 
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1, stagger: 0.1 }
+    const motion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
     );
 
-    tl.fromTo(".glass-visual",
-      { scale: 0.8, opacity: 0, filter: "blur(10px)" },
-      { scale: 1, opacity: 1, filter: "blur(0px)", duration: 1.2, ease: "slow(0.7, 0.7, false)" },
-      "-=0.8"
+    if (motion.matches) return;
+
+    const elements = root.querySelectorAll<HTMLElement>(
+      "[data-hero-reveal]"
     );
 
-    mm.add("(min-width: 768px)", () => {
-       gsap.to(".floating-glass", {
-         y: -20,
-         rotateZ: 5,
-         duration: 6,
-         repeat: -1,
-         yoyo: true,
-         ease: "sine.inOut"
-       });
+    const animation = elements.forEach((element, index) => {
+      element.animate(
+        [
+          {
+            opacity: 0,
+            transform: "translateY(32px)",
+          },
+          {
+            opacity: 1,
+            transform: "translateY(0)",
+          },
+        ],
+        {
+          duration: 850,
+          delay: 120 + index * 110,
+          easing: "cubic-bezier(.22,1,.36,1)",
+          fill: "backwards",
+        }
+      );
     });
 
-  }, { scope: containerRef });
+    return () => {
+      // Animations belong to this mounted hero only.
+      elements.forEach((element) =>
+        element.getAnimations().forEach((a) => a.cancel())
+      );
+    };
+  }, []);
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
-    <section 
-      ref={containerRef}
-      className="relative min-h-screen w-full flex flex-col justify-center overflow-hidden bg-[#030303] text-white selection:bg-purple-500/30 perspective-[1000px] pb-12 md:pb-0"
+    <section
+      ref={sectionRef}
+      aria-labelledby="hero-title"
+      className={`${manrope.className} relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#101010] text-[#F1F0EC] selection:bg-[#D6FF70] selection:text-[#101010]`}
     >
-      {/* --- BACKGROUND LAYER --- */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div 
-          className="absolute inset-0 bg-cover bg-center opacity-30 mix-blend-overlay"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop')" }}
-        ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-[#050505] to-transparent"></div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-transparent"></div>
-        <div className="absolute top-[-10%] left-[-10%] w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] bg-purple-900/20 rounded-full blur-[80px] md:blur-[120px]"></div>
-      </div>
+      {/* Subtle vertical editorial rule */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute bottom-0 left-[50%] top-0 hidden w-px bg-white/[0.035] lg:block"
+      />
 
-      {/* --- NAVBAR --- */}
-      <nav className="absolute top-0 left-0 w-full z-50 px-4 py-4 md:px-12 md:py-6">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="glass-surface relative px-4 py-2 md:px-6 md:py-3 rounded-full border border-white/5 bg-white/[0.03] backdrop-blur-md overflow-hidden group">
-             <span className="relative z-10 font-sans font-bold text-sm md:text-lg tracking-tight">Layoutory.</span>
-          </div>
-          <Link href="mailto:bhavyarathore575@gmail.com">
-            <button className="glass-surface relative px-4 py-2 md:px-6 md:py-3 rounded-full bg-white text-black font-semibold text-[10px] md:text-xs uppercase tracking-widest overflow-hidden transition-transform">
-               <span className="relative z-10">Contact</span>
-            </button>
+      {/* NAVIGATION */}
+      <header className="relative z-30 w-full">
+        <nav
+          aria-label="Main navigation"
+          className="mx-auto flex h-[86px] max-w-[1800px] items-center justify-between border-b border-white/[0.14] px-6 md:h-[100px] md:px-12 xl:px-20"
+        >
+          <Link
+            href="/"
+            onClick={closeMenu}
+            aria-label="Layoutory homepage"
+            className="text-[26px] font-extrabold leading-none tracking-[-0.085em] outline-offset-8"
+          >
+            layoutory<span className="text-[#D6FF70]">.</span>
           </Link>
-        </div>
-      </nav>
 
-      {/* --- HERO CONTENT --- */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20 items-center px-4 md:px-12 mt-20 md:mt-16">
-        <div className="flex flex-col items-start order-2 lg:order-1">
-          <div className="hero-text inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm mb-4 md:mb-8">
-             <span className="relative flex h-2 w-2">
-               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-             </span>
-             <span className="text-[9px] md:text-[10px] uppercase tracking-widest text-white/70">Available for Projects</span>
+          <div className="hidden items-center gap-12 lg:flex">
+            <Link
+              href="/work"
+              className="text-[12px] font-medium tracking-[0.02em] text-white/65 transition-colors hover:text-white"
+            >
+              Selected work
+            </Link>
+            <Link
+              href="/pricing"
+              className="text-[12px] font-medium tracking-[0.02em] text-white/65 transition-colors hover:text-white"
+            >
+              Services & pricing
+            </Link>
+            <a
+              href="mailto:bhavyarathore575@gmail.com"
+              className="text-[12px] font-medium tracking-[0.02em] text-white/65 transition-colors hover:text-white"
+            >
+              Contact
+            </a>
           </div>
 
-          <h1 ref={titleRef} className="font-sans font-medium text-[11vw] md:text-[10vw] lg:text-[6.5vw] leading-[0.9] tracking-tight mb-4 md:mb-6">
-            <div className="overflow-hidden"><span className="hero-text block text-transparent bg-clip-text bg-gradient-to-b from-white via-white/90 to-white/50">BUILDING</span></div>
-            <div className="overflow-hidden"><span className="hero-text block font-serif italic text-white/80">EMPIRES.</span></div>
+          <div className="hidden items-center gap-8 lg:flex">
+            <span className="flex items-center gap-2 text-[10px] uppercase tracking-[0.13em] text-white/45">
+              <span className="h-[6px] w-[6px] rounded-full bg-[#D6FF70]" />
+              Independent digital studio
+            </span>
+
+            <a
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-4 border-b border-[#D6FF70] pb-2 text-[12px] font-semibold transition-colors hover:text-[#D6FF70]"
+            >
+              Start a project
+              <ArrowUpRight
+                size={16}
+                className="transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 motion-reduce:transform-none"
+              />
+            </a>
+          </div>
+
+          <button
+            type="button"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="layoutory-mobile-menu"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="flex h-11 w-11 items-center justify-center border border-white/20 lg:hidden"
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </nav>
+
+        {/* MOBILE MENU */}
+        {menuOpen && (
+          <div
+            id="layoutory-mobile-menu"
+            className="absolute left-0 right-0 top-full border-b border-white/20 bg-[#171717] px-6 py-8 shadow-2xl lg:hidden"
+          >
+            <div className="flex flex-col gap-7 text-[16px]">
+              <Link href="/work" onClick={closeMenu}>
+                Selected work
+              </Link>
+              <Link href="/pricing" onClick={closeMenu}>
+                Services & pricing
+              </Link>
+              <a
+                href="mailto:bhavyarathore575@gmail.com"
+                onClick={closeMenu}
+              >
+                Contact
+              </a>
+              <a
+                href={BOOKING_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+                className="flex items-center justify-between border-t border-white/20 pt-6 text-[#D6FF70]"
+              >
+                Start a project
+                <ArrowUpRight size={20} />
+              </a>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* MAIN HERO */}
+      <div className="relative mx-auto flex w-full max-w-[1800px] flex-1 flex-col justify-between px-6 pb-10 pt-14 md:px-12 md:pb-12 md:pt-20 xl:px-20 xl:pt-24">
+        {/* TOP EYEBROW */}
+        <div
+          data-hero-reveal
+          className="flex items-start justify-between gap-6"
+        >
+          <div className="flex items-start gap-4">
+            <span className="mt-[7px] h-[7px] w-[7px] shrink-0 bg-[#D6FF70]" />
+
+            <p className="max-w-[220px] text-[10px] font-medium uppercase leading-[1.9] tracking-[0.17em] text-white/55 md:text-[11px]">
+              Independent creative &
+              <br />
+              digital development studio
+            </p>
+          </div>
+
+          <span className="hidden text-[11px] tracking-[0.04em] text-white/35 md:block">
+            EST. 2024 — WORKING WORLDWIDE
+          </span>
+        </div>
+
+        {/* TYPOGRAPHIC STATEMENT */}
+        <div className="relative my-20 md:my-24 xl:my-16">
+          <h1
+            id="hero-title"
+            className="max-w-[1550px] font-medium tracking-[-0.092em]"
+          >
+            <span
+              data-hero-reveal
+              className="block whitespace-nowrap text-[clamp(3.6rem,10.6vw,11.5rem)] leading-[0.99]"
+            >
+              Built to
+            </span>
+
+            <span
+              data-hero-reveal
+              className="flex flex-wrap items-baseline gap-x-[0.17em] text-[clamp(3.6rem,10.6vw,11.5rem)] leading-[1.05]"
+            >
+              <span>mean</span>
+              <span
+                className={`${instrument.className} font-normal italic tracking-[-0.075em] text-[#D6FF70]`}
+              >
+                business.
+              </span>
+            </span>
           </h1>
 
-          <p className="hero-text text-sm md:text-lg text-white/40 max-w-md leading-relaxed mb-8 md:mb-10">
-            We transform outdated contractor portfolios into automated acquisition systems. Secure high-ticket bids while you sleep.
-          </p>
-
-          <div className="hero-text flex flex-col w-full sm:w-auto sm:flex-row gap-3 md:gap-4">
-             <Link href="https://calendly.com/bhavyarathore575/30min" target="_blank" className="w-full sm:w-auto">
-               <button className="glass-surface group relative w-full sm:w-auto px-6 py-3 md:px-8 md:py-4 bg-white/5 border border-white/10 rounded-xl md:rounded-2xl overflow-hidden transition-all duration-300 active:scale-95">
-                  <span className="relative z-10 flex items-center justify-center gap-3 text-xs md:text-sm font-bold text-white">
-                    Deploy System <ArrowUpRight size={16} />
-                  </span>
-               </button>
-             </Link>
+          <div
+            data-hero-reveal
+            className="mt-10 flex items-start gap-4 md:mt-14 md:ml-[4px]"
+          >
+            <span
+              aria-hidden="true"
+              className="mt-3 hidden h-px w-12 bg-white/40 sm:block"
+            />
+            <p className="max-w-[520px] text-[15px] font-normal leading-[1.85] tracking-[-0.015em] text-white/55 md:text-[17px]">
+              We create distinctive websites and intelligent digital
+              systems for service businesses that take their
+              growth seriously.
+            </p>
           </div>
         </div>
 
-        {/* RIGHT COLUMN: The "Liquid Glass" Artifact */}
-        <div className="relative h-[40vh] md:h-[50vh] lg:h-[80vh] w-full flex items-center justify-center glass-visual perspective-1000 order-1 lg:order-2 mb-8 lg:mb-0">
-           <div className="floating-glass relative w-[70vw] md:w-full max-w-xs md:max-w-md aspect-square">
-              <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/20 to-blue-500/20 rounded-full blur-[60px] md:blur-[80px]"></div>
-              <div className="glass-surface absolute inset-0 rounded-[2rem] md:rounded-[3rem] border border-white/10 bg-gradient-to-br from-white/[0.05] to-transparent backdrop-blur-2xl shadow-2xl overflow-hidden">
-                 <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay grayscale transition-all duration-700"></div>
-                 <div className="absolute bottom-6 left-6 right-6 md:bottom-8 md:left-8 md:right-8">
-                    <div className="flex items-center gap-3 md:gap-4 mb-3 md:mb-4">
-                       <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                          {/* FIXED responsive icon sizing here */}
-                          <CheckCircle2 className="text-green-400 w-4 h-4 md:w-5 md:h-5" />
-                       </div>
-                       <div>
-                          <p className="text-[10px] md:text-xs text-white/50 uppercase tracking-widest">Revenue Tracked</p>
-                          <p className="text-lg md:text-xl font-bold text-white">$124,000+</p>
-                       </div>
-                    </div>
-                    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-                       <div className="h-full w-[80%] bg-gradient-to-r from-purple-400 to-blue-400"></div>
-                    </div>
-                 </div>
-              </div>
-           </div>
+        {/* LOWER EDITORIAL STRIP */}
+        <div
+          data-hero-reveal
+          className="grid grid-cols-1 gap-10 border-t border-white/20 pt-7 md:grid-cols-[1fr_1fr] md:gap-8 lg:grid-cols-[1.15fr_1fr_1fr]"
+        >
+          <div className="flex flex-col justify-between gap-8">
+            <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-white/40">
+              What we do / 001
+            </span>
+
+            <div className="flex flex-col gap-1 text-[13px] font-medium leading-[1.8] text-white/75">
+              <span>Digital strategy & design</span>
+              <span>Web development</span>
+              <span>Business automation</span>
+            </div>
+          </div>
+
+          <div className="flex flex-col justify-between gap-8">
+            <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-white/40">
+              Our focus / 002
+            </span>
+
+            <p className="max-w-[280px] text-[13px] leading-[1.8] text-white/75">
+              Considered digital experiences for established
+              businesses ready for their next chapter.
+            </p>
+          </div>
+
+          <div className="flex flex-col justify-between gap-8 md:col-span-2 lg:col-span-1">
+            <span className="text-[10px] font-medium uppercase tracking-[0.15em] text-white/40">
+              Your next move / 003
+            </span>
+
+            <a
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-between gap-6 border-b border-white/50 pb-4 transition-colors duration-300 hover:border-[#D6FF70] hover:text-[#D6FF70]"
+            >
+              <span className="text-[clamp(1.5rem,2.5vw,2.3rem)] font-medium tracking-[-0.06em]">
+                Let's make it happen.
+              </span>
+
+              <ArrowUpRight
+                size={28}
+                strokeWidth={1.3}
+                className="shrink-0 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 motion-reduce:transform-none"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* FOOTER RAIL */}
+      <div className="border-t border-white/[0.14]">
+        <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-5 px-6 py-5 md:px-12 xl:px-20">
+          <Link
+            href="/work"
+            className="group inline-flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[0.15em] text-white/65 transition-colors hover:text-white"
+          >
+            Explore selected work
+            <ArrowDown
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-y-1 motion-reduce:transform-none"
+            />
+          </Link>
+
+          <span className="text-[10px] uppercase tracking-[0.15em] text-white/30">
+            Layoutory © {new Date().getFullYear()}
+          </span>
         </div>
       </div>
     </section>

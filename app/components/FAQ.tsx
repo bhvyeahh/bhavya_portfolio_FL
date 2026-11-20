@@ -1,191 +1,333 @@
+
 "use client";
 
-import { useState, useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { Plus, Minus } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowUpRight,
+  Plus,
+  Minus,
+  ArrowDownRight,
+} from "lucide-react";
+import {
+  Manrope,
+  Instrument_Serif,
+} from "next/font/google";
 
-// --- UPDATED FAQ DATA FOR DETAILER & CAFE NICHE ---
+const manrope = Manrope({
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
+});
+
+const BOOKING_URL =
+  "https://calendly.com/bhavyarathore575/30min";
+
 const faqs = [
   {
-    question: "I'M NOT TECH SAVVY. IS THIS HARD TO MANAGE?",
+    number: "01",
+    question: "What does a project typically cost?",
     answer:
-      "Not at all. I build the system to run on autopilot. Clients book online, the calendar updates itself, and you get a text notification with the job details. If you can use a smartphone, you can manage this site.",
+      "For a custom business website, we generally work within the $2,000–$5,000 investment range, depending on the scope, number of pages, design requirements, and functionality. More involved builds or automation systems are quoted individually. We'll discuss your goals and provide a clear proposal before any work begins.",
   },
   {
-    question: "CAN I TAKE DEPOSITS TO PREVENT NO-SHOWS?",
+    number: "02",
+    question: "How long does a website take to build?",
     answer:
-      "Yes. This is a standard feature I build. We can require a partial deposit (e.g., $30) or full payment upfront via Stripe or Square. This drastically reduces last-minute cancellations and protects your time.",
+      "Timelines depend on the size and complexity of the project, along with how quickly content and feedback are available. A focused business website may take a few weeks, while a larger custom build or a project involving integrations may take longer. We'll agree on a realistic schedule before starting.",
   },
   {
-    question: "DO I HAVE TO PAY MONTHLY FEES FOR BOOKING SOFTWARE?",
+    number: "03",
+    question: "Will my website be designed from scratch?",
     answer:
-      "No. Unlike generic apps like Calendly or Vagaro that charge monthly subscriptions, I build a custom booking solution that you own 100%. You avoid those recurring SaaS fees forever.",
+      "Our approach prioritizes design that suits your business rather than simply dropping your content into a generic template. We consider your positioning, customers, messaging, and visual identity. The precise design process and level of customization will be outlined in your project proposal.",
   },
   {
-    question: "WILL THIS HELP ME RANK ON GOOGLE MAPS?",
+    number: "04",
+    question: "Can you connect bookings and automations?",
     answer:
-      "Absolutely. I code your site with 'Local SEO' schemas. This tells Google exactly which cities you serve, helping you appear higher when customers search 'Mobile Detailing near me' or 'Cafe in [City]'.",
+      "Yes. Depending on your requirements, we can integrate inquiry forms, appointment scheduling, email notifications, CRM connections, and automated follow-up workflows. We focus on practical solutions that fit your existing operations rather than adding complicated tools you don't need. Any third-party subscription costs will be discussed upfront.",
   },
   {
-    question: "HOW LONG DOES IT TAKE TO LAUNCH?",
+    number: "05",
+    question: "Will I own the website when it's finished?",
     answer:
-      "A high-conversion Detailer Landing Page with booking is usually ready in 5-7 days. Larger sites for Cafes or Detail Shops with e-commerce products typically take about 2 weeks.",
+      "Ownership, access, hosting, and handover terms are clearly defined in the project agreement. We can help arrange the website so that important accounts and services are under your business's control. If you need training or ongoing technical assistance, that can also be included in the scope.",
   },
   {
-    question: "I ALSO OWN A CAFE. CAN YOU DO DIGITAL MENUS?",
+    number: "06",
+    question: "Will the website help with Google visibility?",
     answer:
-      "Yes! For my cafe clients, I build fast-loading digital menus linked to QR codes. I can also set up simple online ordering systems for pickup, bypassing expensive delivery app fees.",
+      "We can build with search-friendly foundations such as semantic page structure, responsive layouts, performance considerations, and appropriate metadata. Local SEO requirements can also be addressed as part of the project. Rankings depend on many factors outside the website itself, so we don't promise a specific Google position.",
   },
   {
-    question: "WHAT DO I NEED TO GET STARTED?",
+    number: "07",
+    question: "What happens after the website goes live?",
     answer:
-      "Just your service list, pricing, and photos of your work (cars or coffee). I handle the technical heavy lifting—from domain setup to writing the sales copy that converts visitors into bookers.",
+      "Before launch, we test the important pages, forms, and interactions. We'll also discuss handover requirements, content updates, and any ongoing maintenance or support you might need. Post-launch services and support periods are defined in the proposal so expectations stay clear.",
   },
 ];
 
+function FAQItem({
+  item,
+  index,
+  isOpen,
+  onToggle,
+}: {
+  item: (typeof faqs)[number];
+  index: number;
+  isOpen: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="group border-b border-black/20">
+      <h3>
+        <button
+          type="button"
+          id={`faq-question-${index}`}
+          aria-expanded={isOpen}
+          aria-controls={`faq-answer-${index}`}
+          onClick={onToggle}
+          className="flex w-full items-start justify-between gap-5 py-7 text-left outline-offset-[-3px] md:gap-8 md:py-9 lg:py-10"
+        >
+          <div className="flex min-w-0 flex-1 items-start gap-5 md:gap-8">
+            <span
+              className={`mt-2 shrink-0 text-[10px] font-medium tabular-nums tracking-[0.07em] transition-colors duration-300 ${
+                isOpen
+                  ? "text-[#171717]"
+                  : "text-black/35"
+              }`}
+            >
+              / {item.number}
+            </span>
+
+            <span
+              className={`max-w-[650px] text-[clamp(1.25rem,2.1vw,2.25rem)] font-medium leading-[1.3] tracking-[-0.045em] transition-colors duration-300 ${
+                isOpen
+                  ? "text-[#171717]"
+                  : "text-black/65 group-hover:text-[#171717]"
+              }`}
+            >
+              {item.question}
+            </span>
+          </div>
+
+          <span
+            aria-hidden="true"
+            className={`flex h-10 w-10 shrink-0 items-center justify-center border transition-colors duration-300 md:h-12 md:w-12 ${
+              isOpen
+                ? "border-[#171717] bg-[#171717] text-[#F1F0EA]"
+                : "border-black/25 text-black/70 group-hover:border-[#171717] group-hover:bg-[#171717] group-hover:text-white"
+            }`}
+          >
+            {isOpen ? (
+              <Minus size={19} strokeWidth={1.4} />
+            ) : (
+              <Plus size={19} strokeWidth={1.4} />
+            )}
+          </span>
+        </button>
+      </h3>
+
+      {/* Accessible expanding panel */}
+      <div
+        id={`faq-answer-${index}`}
+        role="region"
+        aria-labelledby={`faq-question-${index}`}
+        inert={!isOpen}
+        className={`grid transition-[grid-template-rows,opacity] duration-500 ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transition-none ${
+          isOpen
+            ? "grid-rows-[1fr] opacity-100"
+            : "grid-rows-[0fr] opacity-0"
+        }`}
+      >
+        <div className="min-h-0 overflow-hidden">
+          <div className="pb-10 pl-0 md:pb-12 md:pl-[50px]">
+            <p className="max-w-[610px] text-[14px] leading-[1.95] tracking-[-0.012em] text-black/55 md:text-[15px]">
+              {item.answer}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
-  const containerRef = useRef<HTMLElement>(null);
-  
-  // Create refs array for the content divs so we can animate height
-  const answerRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  const { contextSafe } = useGSAP({ scope: containerRef });
-
-  const handleToggle = contextSafe((index: number) => {
-    if (openIndex === index) {
-      // CLOSING: Animate height to 0
-      gsap.to(answerRefs.current[index], {
-        height: 0,
-        opacity: 0,
-        duration: 0.4,
-        ease: "power2.inOut",
-        onComplete: () => setOpenIndex(null), // Only update state after animation
-      });
-    } else {
-      // SWITCHING or OPENING
-      // If there's an open one, close it first
-      if (openIndex !== null) {
-        gsap.to(answerRefs.current[openIndex], {
-          height: 0,
-          opacity: 0,
-          duration: 0.3,
-          ease: "power2.in",
-        });
-      }
-      
-      setOpenIndex(index);
-      // Wait a tick for React to render the new state (if conditionally rendered) 
-      // OR since we are just animating height, we trigger it immediately.
-      
-      // We animate FROM 0 to auto manually since we aren't unmounting with GSAP here for simplicity,
-      // but to keep it "Awwwards" style, we animate the height property.
-      
-      gsap.fromTo(
-        answerRefs.current[index],
-        { height: 0, opacity: 0 },
-        { height: "auto", opacity: 1, duration: 0.6, ease: "elastic.out(1, 0.75)" }
-      );
-    }
-  });
-
-  // Staggered Entrance on Load
-  useGSAP(() => {
-    gsap.from(".faq-item", {
-      y: 20,
-      opacity: 0,
-      duration: 0.8,
-      stagger: 0.1,
-      ease: "power2.out",
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 80%",
-      }
-    });
-  }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} className="relative w-full bg-[#050505] py-32 px-4 md:px-12 border-t border-white/5 overflow-hidden">
-      {/* --- Header --- */}
-      <div className="w-full flex justify-between items-center text-gray-500 font-mono text-[10px] uppercase tracking-[0.2em] mb-24 z-20 relative">
-        <span>//</span>
-        <span className="text-white font-bold tracking-widest">FAQ</span>
-        <span>//</span>
-      </div>
+    <section
+      id="faq"
+      aria-labelledby="faq-title"
+      className={`${manrope.className} relative isolate w-full overflow-hidden bg-[#F1F0EA] text-[#171717] selection:bg-[#D6FF70] selection:text-black`}
+    >
+      <div className="mx-auto max-w-[1800px] px-6 pb-24 pt-24 md:px-12 md:pb-36 md:pt-32 xl:px-20 xl:pb-40 xl:pt-40">
 
-      <div className="max-w-4xl mx-auto relative z-20">
-        {faqs.map((faq, index) => (
-          <div
-            key={index}
-            className="faq-item group border-b border-white/10 last:border-0 relative"
-          >
-            {/* --- Animated Neon Glow Line (Active State) --- */}
-            {/* This creates a line that shoots across when active */}
-            <div 
-                className={`absolute bottom-0 left-0 h-[1px] bg-brand-green shadow-[0_0_10px_#00ff41] transition-all duration-700 ease-out z-30 ${openIndex === index ? "w-full opacity-100" : "w-0 opacity-0"}`}
-            ></div>
+        {/* TOP SECTION LABEL */}
+        <div className="flex items-center justify-between gap-5 border-t border-black/25 pt-5">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.17em]">
+            06 / Common questions
+          </span>
 
-            <button
-              onClick={() => handleToggle(index)}
-              className="w-full py-8 flex justify-between items-center text-left transition-all duration-300 hover:pl-4"
+          <span className="text-[10px] uppercase tracking-[0.14em] text-black/45">
+            A little more clarity
+          </span>
+        </div>
+
+        {/* HEADER */}
+        <div className="grid grid-cols-1 gap-12 pb-24 pt-20 md:pb-32 md:pt-24 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-9">
+            <h2
+              id="faq-title"
+              className="text-[clamp(3.4rem,9vw,10.5rem)] font-semibold leading-[0.94] tracking-[-0.09em]"
             >
-              <div className="flex items-baseline gap-8">
-                <span className={`font-mono text-xs transition-colors duration-300 ${openIndex === index ? "text-brand-green" : "text-gray-600 group-hover:text-white"}`}>
-                  0{index + 1}
+              Good questions.
+              <br />
+
+              <span
+                className={`${instrument.className} font-normal italic tracking-[-0.065em]`}
+              >
+                Clear answers.
+              </span>
+            </h2>
+          </div>
+
+          <div className="flex flex-col justify-end lg:col-span-3">
+            <span className="mb-5 block h-[7px] w-[7px] bg-[#171717]" />
+
+            <p className="max-w-[310px] text-[14px] leading-[1.9] tracking-[-0.015em] text-black/55 md:text-[15px]">
+              A few things worth knowing
+              before we get started.
+              No confusing terminology,
+              no unnecessary complications.
+            </p>
+          </div>
+        </div>
+
+        {/* TWO COLUMN FAQ STRUCTURE */}
+        <div className="grid grid-cols-1 gap-16 border-t border-black/25 lg:grid-cols-12 lg:gap-10">
+
+          {/* LEFT SIDE */}
+          <div className="lg:col-span-4">
+            <div className="flex flex-col justify-between gap-14 pt-10 lg:sticky lg:top-10 lg:min-h-[480px] lg:pt-14">
+              <div>
+                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-black/45">
+                  Before we begin
                 </span>
-                <h3
-                  className={`font-display font-bold text-lg md:text-2xl uppercase tracking-tight transition-colors duration-300 ${
-                    openIndex === index
-                      ? "text-white"
-                      : "text-gray-400 group-hover:text-white"
-                  }`}
-                >
-                  {faq.question}
+
+                <h3 className="mt-10 max-w-[380px] text-[clamp(2.5rem,4.3vw,4.8rem)] font-medium leading-[1.1] tracking-[-0.075em]">
+                  No question
+                  <br />
+                  <span
+                    className={`${instrument.className} font-normal italic tracking-[-0.05em]`}
+                  >
+                    too small.
+                  </span>
                 </h3>
-              </div>
 
-              <div className="relative w-6 h-6 flex items-center justify-center">
-                 {/* Icon Rotation handled via CSS classes for performance or simple GSAP logic */}
-                 <div className={`absolute transition-all duration-500 ${openIndex === index ? "rotate-180 opacity-0" : "rotate-0 opacity-100"}`}>
-                    <Plus className="text-gray-500 group-hover:text-white transition-colors" size={20} />
-                 </div>
-                 <div className={`absolute transition-all duration-500 ${openIndex === index ? "rotate-0 opacity-100" : "-rotate-90 opacity-0"}`}>
-                    <Minus className="text-brand-green" size={20} />
-                 </div>
-              </div>
-            </button>
-
-            {/* Answer Wrapper with ref for GSAP height animation */}
-            <div
-              ref={(el) => {
-                // Assign to refs array without returning anything
-                answerRefs.current[index] = el;
-              }}
-              className="overflow-hidden h-0 opacity-0" // Start hidden
-              style={openIndex === 0 && index === 0 ? { height: 'auto', opacity: 1 } : {}} // Hack to show first one initially if desired
-            >
-              <div className="pb-8 pl-12 md:pl-16 pr-4">
-                <p className="text-gray-400 text-sm leading-relaxed max-w-2xl font-mono">
-                  {faq.answer}
+                <p className="mt-8 max-w-[320px] text-[13px] leading-[1.9] text-black/50 md:text-[14px]">
+                  Investing in your business's
+                  digital presence is a considered
+                  decision. Here's what you can
+                  expect when working with us.
                 </p>
+              </div>
+
+              <div className="hidden lg:block">
+                <div className="mb-8 h-px w-12 bg-black/35" />
+
+                <div className="flex items-end justify-between gap-6">
+                  <span className="text-[10px] font-medium uppercase leading-[1.9] tracking-[0.12em] text-black/40">
+                    Transparency first.
+                    <br />
+                    Always.
+                  </span>
+
+                  <ArrowDownRight
+                    size={38}
+                    strokeWidth={1}
+                    className="text-black/40"
+                    aria-hidden="true"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        ))}
+
+          {/* RIGHT SIDE — ACCORDION */}
+          <div className="lg:col-span-8">
+            <div className="border-t border-black/15 lg:border-t-0">
+              {faqs.map((item, index) => (
+                <FAQItem
+                  key={item.number}
+                  item={item}
+                  index={index}
+                  isOpen={openIndex === index}
+                  onToggle={() =>
+                    setOpenIndex(
+                      openIndex === index ? null : index
+                    )
+                  }
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* BOTTOM CTA */}
+        <div className="mt-28 grid grid-cols-1 gap-12 border-t border-black/25 pt-8 md:mt-40 md:grid-cols-12 md:gap-8">
+          <div className="md:col-span-5">
+            <span className="mb-6 block text-[10px] font-semibold uppercase tracking-[0.16em]">
+              Still curious?
+            </span>
+
+            <p className="max-w-[310px] text-[13px] leading-[1.9] text-black/50">
+              Every project is different.
+              If you have a question about
+              yours, we're happy to talk
+              through the possibilities.
+            </p>
+          </div>
+
+          <div className="md:col-span-7">
+            <a
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-between gap-6 border-b border-black/45 pb-5 transition-colors duration-300 hover:border-[#171717] hover:text-black/60"
+            >
+              <span className="text-[clamp(1.9rem,3.7vw,4rem)] font-medium leading-[1.12] tracking-[-0.07em]">
+                Let's clear things up.
+              </span>
+
+              <ArrowUpRight
+                size={30}
+                strokeWidth={1.3}
+                className="shrink-0 transition-transform duration-300 motion-safe:group-hover:-translate-y-1 motion-safe:group-hover:translate-x-1"
+              />
+            </a>
+          </div>
+        </div>
       </div>
 
-      <div className="text-center mt-20 text-gray-500 text-[10px] font-mono uppercase tracking-widest">
-        Can't find the answer?{" "}
-        <a
-          href="#"
-          className="text-white underline hover:text-brand-green transition-colors"
-        >
-          Contact me directly
-        </a>
-      </div>
+      {/* SMALL FOOTER RAIL */}
+      <div className="border-t border-black/15">
+        <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-5 px-6 py-6 md:px-12 xl:px-20">
+          <span className="text-[10px] font-semibold uppercase tracking-[0.15em]">
+            Layoutory®
+          </span>
 
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:30px_30px] z-0 pointer-events-none"></div>
+          <span className="text-[10px] uppercase tracking-[0.12em] text-black/40">
+            Let's build something considered.
+          </span>
+        </div>
+      </div>
     </section>
   );
 }
