@@ -161,7 +161,9 @@ function useAnimatedMetrics(
       },
     });
 
-    return () => tween.kill();
+    return () => {
+  tween.kill();
+};
   }, [stage, enabled]);
 
   const reducedMotion =
@@ -268,7 +270,9 @@ function PerformanceGraph({
       overwrite: "auto",
     });
 
-    return () => tween.kill();
+    return () => {
+  tween.kill();
+};
   }, [active, enabled]);
 
   return (
